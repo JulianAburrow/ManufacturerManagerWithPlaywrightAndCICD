@@ -13,4 +13,8 @@
     <None Remove=".github\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MMDataAccess\MMDataAccess.csproj" />
+  </ItemGroup>
+
 </Project>

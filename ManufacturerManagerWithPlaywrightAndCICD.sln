@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36212.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMUserInterface", "MMUserInterface\MMUserInterface.csproj", "{A6E2F4CF-EBA3-40EF-9F26-02E8D8DB7C96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMDataAccess", "MMDataAccess\MMDataAccess.csproj", "{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A6E2F4CF-EBA3-40EF-9F26-02E8D8DB7C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6E2F4CF-EBA3-40EF-9F26-02E8D8DB7C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6E2F4CF-EBA3-40EF-9F26-02E8D8DB7C96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
