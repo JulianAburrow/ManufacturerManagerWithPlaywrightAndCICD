@@ -1,10 +1,14 @@
-using MMUserInterface.Components;
-
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.ConfigureSqlConnections(configuration);
+builder.Services.AddDependencies();
+
 
 var app = builder.Build();
 
