@@ -1,0 +1,29 @@
+﻿<MudTable Items="Manufacturers"
+          Hover
+          FixedHeader="true">
+    <HeaderContent>
+        <MudTh title="Sort by Manufacturer Name">
+            <MudTableSortLabel SortBy="new Func<ManufacturerModel, object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Status">
+            <MudTableSortLabel SortBy="new Func<ManufacturerModel, object>(x => x.Status.StatusName)">
+                Status
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Status.StatusName</MudTd>
+        <MudTd>
+            <a href="/manufacturer/view/@context.ManufacturerId" class="btn btn-primary">View</a>
+            &nbsp;
+            <a href="/manufacturer/edit/@context.ManufacturerId" class="btn btn-primary">Edit</a>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 5, 10, 15, int.MaxValue }" />
+    </PagerContent>
+</MudTable>

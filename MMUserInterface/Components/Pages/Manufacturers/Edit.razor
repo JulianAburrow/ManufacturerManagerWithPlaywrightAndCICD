@@ -1,0 +1,16 @@
+﻿@page "/manufacturer/edit/{ManufacturerId:int}"
+@inherits ManufacturerBasePageClass
+
+<PageTitle>Edit Manufacturer</PageTitle>
+
+@if (ManufacturerDisplayModel == null || ManufacturerStatuses == null)
+{
+    <LoadingMessageComponent ValueToShow="@Manufacturer" />
+    return;
+}
+
+<EditForm Model="@ManufacturerDisplayModel" OnValidSubmit="@UpdateManufacturer">
+
+    <ManufacturerCreateUpdateComponent ManufacturerDisplayModel="ManufacturerDisplayModel" ManufacturerStatuses="ManufacturerStatuses" />
+
+</EditForm>
