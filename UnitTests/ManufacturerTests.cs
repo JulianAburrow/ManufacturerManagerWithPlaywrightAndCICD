@@ -72,7 +72,7 @@ public class ManufacturerTests
 
         var manufacturersReturned = await _manufacturerHandler.GetManufacturersAsync();
 
-        manufacturersReturned.Count().Should().Be(initialCount + 4);
+        manufacturersReturned.Count.Should().Be(initialCount + 4);
     }
 
     [Fact]
@@ -98,7 +98,8 @@ public class ManufacturerTests
         _manufacturerManagerContext.SaveChanges();
         var manufacturerId = Manufacturer1.ManufacturerId;
         await _manufacturerHandler.DeleteManufacturerAsync(manufacturerId, true);
-        var deletedManufacturer = await _manufacturerHandler.GetManufacturerAsync(Manufacturer4.ManufacturerId);
-        deletedManufacturer.Should().BeNull();
+
+        Func<Task> act = async () => await _manufacturerHandler.GetManufacturerAsync(manufacturerId);
+        await act.Should().ThrowAsync<ArgumentNullException>();
     }
 }

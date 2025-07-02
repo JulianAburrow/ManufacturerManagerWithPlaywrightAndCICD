@@ -1,11 +1,8 @@
 ﻿namespace MMDataAccess.Handlers;
 
-public class ManufacturerHandler : IManufacturerHandler
+public class ManufacturerHandler(ManufacturerManagerContext context) : IManufacturerHandler
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ManufacturerHandler(ManufacturerManagerContext context) =>
-        _context = context;
+    private readonly ManufacturerManagerContext _context = context;
 
     public async Task CreateManufacturerAsync(ManufacturerModel manufacturer, bool callSaveChanges)
     {
@@ -28,7 +25,8 @@ public class ManufacturerHandler : IManufacturerHandler
         await _context.Manufacturers
             .Include(m => m.Status)
             .AsNoTracking()
-            .SingleOrDefaultAsync(m => m.ManufacturerId == manufacturerId);
+            .SingleOrDefaultAsync(m => m.ManufacturerId == manufacturerId)
+            ?? throw new ArgumentNullException(nameof(manufacturerId), "Manufacturer not found");
 
     public async Task<List<ManufacturerModel>> GetManufacturersAsync() =>
         await _context.Manufacturers

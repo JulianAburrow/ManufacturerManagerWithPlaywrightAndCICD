@@ -34,6 +34,6 @@ public class ManufacturerStatusTests
 
         var manufacturerStatusesReturned = await _manufacturerStatusHandler.GetManufacturerStatusesAsync();
 
-        manufacturerStatusesReturned.Count().Should().Be(initialCount + 2);
+        manufacturerStatusesReturned.Count.Should().Be(initialCount + 2);
     }
 }
