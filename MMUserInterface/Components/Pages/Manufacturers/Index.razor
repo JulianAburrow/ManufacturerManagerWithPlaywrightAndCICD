@@ -1,0 +1,17 @@
+﻿@page "/manufacturers/index"
+@inherits ManufacturerBasePageClass
+
+<PageTitle>Manufacturers</PageTitle>
+
+@if (Manufacturers == null)
+{
+    <LoadingMessageComponent ValueToShow="@ManufacturerPlural" />
+    return;
+}
+
+<a href="/manufacturer/create" class="btn btn-primary">Create Manufacturer</a>
+
+<br />
+<br />
+
+<ManufacturerGridViewComponent Manufacturers="@Manufacturers" />

@@ -1,0 +1,26 @@
+﻿@page "/manufacturer/view/{ManufacturerId:int}"
+@inherits ManufacturerBasePageClass
+
+<PageTitle>View Manufacturer</PageTitle>
+
+@if (ManufacturerModel == null || ManufacturerModel.Status == null)
+{
+    <LoadingMessageComponent ValueToShow="@Manufacturer" />
+    return;
+}
+
+<MudGrid>
+    <MudItem sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudField Label="Name">@ManufacturerModel.Name</MudField>
+                <MudField Label="Status">@ManufacturerModel.Status.StatusName</MudField>
+            </MudCardContent>
+            <MudCardActions>
+                <a href="/manufacturer/edit/@ManufacturerModel.ManufacturerId" class="btn btn-primary">Edit</a>
+                &nbsp;
+                <a href="/manufacturers/index" class="btn btn-primary">Back to list</a>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>
