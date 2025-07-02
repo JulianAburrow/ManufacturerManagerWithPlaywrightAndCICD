@@ -8,6 +8,6 @@ global using MMUserInterface.Components;
 global using MMUserInterface.Components.Layout;
 global using MMUserInterface.Extensions;
 global using MMUserInterface.Models;
-global using MMUserInterface.Shared;
+global using MMUserInterface.Shared.CommonValues;
 global using MMUserInterface.Shared.BasePageClasses;
 global using MudBlazor;

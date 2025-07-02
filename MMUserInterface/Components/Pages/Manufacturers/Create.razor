@@ -1,0 +1,16 @@
+﻿@page "/manufacturer/create"
+@inherits ManufacturerBasePageClass
+
+<PageTitle>Create Manufacturer</PageTitle>
+
+@if (ManufacturerStatuses == null)
+{
+    <LoadingMessageComponent ValueToShow="@Values" />
+    return;
+}
+
+<EditForm Model="@ManufacturerDisplayModel" OnValidSubmit="CreateManufacturer">
+
+    <ManufacturerCreateUpdateComponent ManufacturerDisplayModel="ManufacturerDisplayModel" ManufacturerStatuses="ManufacturerStatuses" />
+
+</EditForm>

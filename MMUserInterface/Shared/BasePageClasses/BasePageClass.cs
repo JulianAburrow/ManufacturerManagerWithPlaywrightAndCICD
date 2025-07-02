@@ -8,6 +8,8 @@ public class BasePageClass : ComponentBase
 
     [CascadingParameter] public MainLayout MainLayout { get; set; } = new();
 
+    protected string Values = "Values";
+
     protected BreadcrumbItem GetHomeBreadcrumbItem(bool isDisabled = false)
     {
         return new("Home", "#", isDisabled, icon: Icons.Material.Filled.Home);
