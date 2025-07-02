@@ -1,3 +1,5 @@
+using MudBlazor.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
@@ -6,6 +8,7 @@ var configuration = builder.Configuration;
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddMudServices();
 builder.Services.ConfigureSqlConnections(configuration);
 builder.Services.AddDependencies();
 

@@ -4,3 +4,4 @@ global using MMDataAccess.Handlers;
 global using MMDataAccess.Interfaces;
 global using MMUserInterface.Components;
 global using MMUserInterface.Extensions;
+global using MudBlazor;

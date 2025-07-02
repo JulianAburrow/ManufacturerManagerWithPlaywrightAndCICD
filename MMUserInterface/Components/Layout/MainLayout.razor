@@ -1,9 +1,30 @@
 ﻿@inherits LayoutComponentBase
 
-@Body
+<MudThemeProvider />
+<MudDialogProvider />
+<MudPopoverProvider />
+<MudSnackbarProvider />
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+<PageTitle>Office Manager</PageTitle>
+
+<CascadingValue Value="this">
+    <MudLayout>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Typo="Typo.h5" Class="ml-3">Office Manager</MudText>
+            <MudSpacer />
+            <div style="width: 80%; color: white; font-size: 24px">@HeaderText</div>
+        </MudAppBar>
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+            <NavMenu />
+        </MudDrawer>
+        <MudMainContent>
+            <MudBreadcrumbs Items="BreadCrumbs">
+                <SeparatorTemplate>
+                    <MudIcon Icon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" />
+                </SeparatorTemplate>
+            </MudBreadcrumbs>
+            @Body
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
