@@ -44,6 +44,7 @@ jobs:
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Release
       - name: Install Playwright Browsers
-        run: pwsh -Command "dotnet tool restore; dotnet playwright install"
+        run: dotnet playwright install
+        working-directory: PlaywrightTests
       - name: Run Playwright Tests
         run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~PlaywrightTests
