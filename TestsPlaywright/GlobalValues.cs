@@ -1,4 +1,4 @@
-﻿namespace PlaywrightTests;
+﻿namespace TestsPlaywright;
 
 public static class GlobalValues
 {

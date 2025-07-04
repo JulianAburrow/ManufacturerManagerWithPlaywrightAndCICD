@@ -19,9 +19,11 @@ jobs:
       - name: Build the project
         run: dotnet build --configuration Release
       - name: Run Unit Tests
-        run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~UnitTests
+        run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~TestsUnit
+        working-directory: TestsUnit
       - name: Install Playwright Browsers
-        run: dotnet playwright install
-        working-directory: PlaywrightTests
+        run: pwsh E2ETests/bin/Release/net10.0/playwright.ps1 install --with-deps
+        working-directory: TestsPlaywright
       - name: Run Playwright Tests
-        run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~PlaywrightTests
+        run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~TestsPlaywright
+        working-directory: TestsPlaywright
