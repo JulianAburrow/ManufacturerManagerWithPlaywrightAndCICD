@@ -1,4 +1,27 @@
-﻿# .github/workflows/build.yml
+﻿# # .github/workflows/build.yml
+# name: Build ManufacturerManagerWithPlaywrightAndCICD
+
+# on:
+#   push:
+#     branches: [ main, feature/* ]
+#   pull_request:
+#     branches: [ main ]
+
+# jobs:
+#   build:
+#     runs-on: windows-latest
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Set up .NET
+#         uses: actions/setup-dotnet@v4
+#         with:
+#           dotnet-version: '10.0.x'
+#       - name: Build the project
+#         run: dotnet build --configuration Release
+#       - name : Run Tests
+#         run : dotnet test --no-build --configuration Release
+
+# .github/workflows/build.yml
 name: Build ManufacturerManagerWithPlaywrightAndCICD
 
 on:
@@ -18,5 +41,9 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Build the project
         run: dotnet build --configuration Release
-      - name : Run Tests
-        run : dotnet test --no-build --configuration Release
+      - name: Run Unit Tests
+        run: dotnet test --no-build --configuration Release
+      - name: Install Playwright Browsers
+        run: pwsh -Command "dotnet tool restore; dotnet playwright install"
+      - name: Run Playwright Tests
+        run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~PlaywrightTests
