@@ -39,12 +39,12 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
+      - name: Install Playwright Browsers
+        run: dotnet playwright install
       - name: Build the project
         run: dotnet build --configuration Release
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Release
-      - name: Install Playwright Browsers
-        run: dotnet playwright install
         working-directory: PlaywrightTests
       - name: Run Playwright Tests
         run: dotnet test --no-build --configuration Release --filter FullyQualifiedName~PlaywrightTests
