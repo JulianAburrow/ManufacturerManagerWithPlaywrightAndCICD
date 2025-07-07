@@ -38,7 +38,7 @@ jobs:
           Get-ChildItem -Path $PWD -Recurse -Filter '*.csproj' |
           ForEach-Object { $_.FullName }
       - name: Start test server
-        run:  dotnet run --project MMUserInterface.csproj --no-build --urls "https://localhost:5245"
+        run:  dotnet run --project src/MMUserInterface.csproj --no-build --urls "https://localhost:5245"
       - name: Run all tests
         run : dotnet test --no-build --configuration Debug
       - name: Run Unit Tests
