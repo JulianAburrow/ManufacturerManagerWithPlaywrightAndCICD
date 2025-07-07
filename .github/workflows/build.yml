@@ -26,7 +26,7 @@ jobs:
         shell: pwsh
         run: |
           Start-process dotnet `
-            -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "https://localhost:5245"' `
+            -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "http://localhost:5245"' `
             -NoNewWindow
       - name: Run Unit Tests
         working-directory: TestsUnit
