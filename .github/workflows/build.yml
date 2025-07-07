@@ -22,12 +22,30 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
         run: playwright install --with-deps
-      - name: Start test server (background via PowerShell)
+      - name: Start test server
         shell: pwsh
         run: |
-          Start-process dotnet `
-            -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "http://localhost:5245"' `
-            -NoNewWindow
+          Write-Host '⏳ Launching web server…'
+          # Kick it off in the background
+          Start-Process dotnet `
+          -ArgumentList 'run --project src/MMUserInterface/MMUserInterface.csproj --no-build --urls http://localhost:5245' `
+          -NoNewWindow
+      - name: Wait for HTTP server
+        shell: pwsh
+        run: |
+          Write-Host '⏳ Waiting for http://localhost:5245 to respond…'
+          $timeout = Get-Date().AddSeconds(30)
+          while ((Get-Date) -lt $timeout) {
+            try {
+              Invoke-WebRequest http://localhost:5245 -UseBasicParsing -ErrorAction Stop | Out-Null
+              Write-Host '✅ Server is up!'
+              exit 0
+            } catch {
+              Start-Sleep -Seconds 1
+            }
+          }
+          Write-Error '❌ Server failed to start within 30s'
+          exit 1
       - name: Run Unit Tests
         working-directory: TestsUnit
         run: dotnet test TestsUnit.csproj
