@@ -3,4 +3,5 @@
 public static class GlobalValues
 {
     public static string BaseUrl = "https://localhost:5245";
+    public static bool IsHeadless = true;
 }

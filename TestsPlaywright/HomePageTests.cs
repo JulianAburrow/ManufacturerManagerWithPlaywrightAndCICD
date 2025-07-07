@@ -8,7 +8,7 @@ public class HomePageTests
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
         {
-            Headless = false
+            Headless = GlobalValues.IsHeadless
         });
         var page = await browser.NewPageAsync();
         await page.GotoAsync(GlobalValues.BaseUrl);
