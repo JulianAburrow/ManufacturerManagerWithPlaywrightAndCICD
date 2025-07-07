@@ -28,13 +28,13 @@ jobs:
           Write-Host '⏳ Launching web server…'
           # Kick it off in the background
           Start-Process dotnet `
-          -ArgumentList 'run --project src/MMUserInterface/MMUserInterface.csproj --no-build --urls http://localhost:5245' `
+          -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls http://localhost:5245' `
           -NoNewWindow
       - name: Wait for HTTP server
         shell: pwsh
         run: |
           Write-Host '⏳ Waiting for http://localhost:5245 to respond…'
-          $timeout = Get-Date().AddSeconds(30)
+          $timeout = (Get-Date).AddSeconds(30)
           while ((Get-Date) -lt $timeout) {
             try {
               Invoke-WebRequest http://localhost:5245 -UseBasicParsing -ErrorAction Stop | Out-Null
