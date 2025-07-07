@@ -22,8 +22,10 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
         run: playwright install --with-deps
+      - name: List Playwright bin contents
+        run: ls ${{ github.workspace }}/TestsPlaywright/bin/Debug/net10.0
       - name: Install Playwright Browsers
-        run: pwsh TestsPlaywright/bin/Debug/net10.0/playwright.ps1 install --with-deps
+        run: pwsh "${{ github.workspace }}/TestsPlaywright/bin/Debug/net10.0/playwright.ps1" install --with-deps
         working-directory: TestsPlaywright
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Debug --filter FullyQualifiedName~TestsUnit
