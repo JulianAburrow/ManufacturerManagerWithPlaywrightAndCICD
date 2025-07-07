@@ -28,15 +28,13 @@ jobs:
           Start-process dotnet `
             -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "https://localhost:5245"' `
             -NoNewWindow
-      # - name: Run all tests
-      #   run : dotnet test --no-build --configuration Debug
       - name: Run Unit Tests
         working-directory: TestsUnit
-        run: dotnet test TestsUnit.csproj \
-          --no-build \
+        run: dotnet test TestsUnit.csproj
+          --no-build
           --configuration Debug
       - name: Run Playwright Tests
         working-directory: TestsPlaywright
-        run: dotnet test TestsPlaywright.csproj \
-          --no-build \
+        run: dotnet test TestsPlaywright.csproj
+          --no-build
           --configuration Debug
