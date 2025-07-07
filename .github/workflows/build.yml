@@ -16,8 +16,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.x'
-      - name: Build the project
-        run: dotnet build --configuration Debug-
+      - name: Build solution
+        run: dotnet build ManufacturerManagerWithPlaywrightAndCICD.sln -c Debug -p:Platform="Any CPU"
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
