@@ -29,6 +29,8 @@ jobs:
       - name: Install Playwright Browsers
         run: pwsh "${{ github.workspace }}/TestsPlaywright/bin/Debug/net10.0/playwright.ps1" install --with-deps
         working-directory: TestsPlaywright
+      - name: Debug - list all project files
+        run: pwd ls -Recurse ${{ github.workspace }} | Where-Object Name -Match '\.csproj$'
       - name: Start test server
         run:  dotnet run --project MMUserInterface.csproj --no-build --urls "https://localhost:5245"
       - name: Run all tests
