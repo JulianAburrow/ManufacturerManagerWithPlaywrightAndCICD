@@ -11,7 +11,10 @@ public class HomePageTests
             Headless = GlobalValues.IsHeadless
         });
         var page = await browser.NewPageAsync();
-        await page.GotoAsync(GlobalValues.BaseUrl);
+        await page.GotoAsync(GlobalValues.BaseUrl, new PageGotoOptions
+        {
+            WaitUntil = WaitUntilState.NetworkIdle
+        });
         var title = await page.TitleAsync();
 
         Assert.Equal("Manufacturer Manager", title);
