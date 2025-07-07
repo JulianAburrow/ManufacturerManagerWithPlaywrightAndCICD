@@ -18,32 +18,25 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Build solution
         run: dotnet build ManufacturerManagerWithPlaywrightAndCICD.sln -c Debug -p:Platform="Any CPU"
-      - name: Debug - list all csproj
-        run: ls -R ${{ github.workspace }} | grep '\.csproj'
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
         run: playwright install --with-deps
-      # - name: List Playwright bin contents
-      #   run: ls ${{ github.workspace }}/TestsPlaywright/bin/Debug/net10.0
-      - name: Install Playwright Browsers
-        run: pwsh "${{ github.workspace }}/TestsPlaywright/bin/Debug/net10.0/playwright.ps1" install --with-deps
-        working-directory: TestsPlaywright
-      - name: Debug - list all .csproj files
+      - name: Start test server (background via PowerShell)
         shell: pwsh
         run: |
-          # Print current working directory
-          echo "Working directory: $PWD"
-          # Recursively find every .csproj
-          Get-ChildItem -Path $PWD -Recurse -Filter '*.csproj' |
-          ForEach-Object { $_.FullName }
-      - name: Start test server
-        run:  dotnet run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "https://localhost:5245"
-      - name: Run all tests
-        run : dotnet test --no-build --configuration Debug
+          Start-process dotnet `
+            -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls "https://localhost:5245"' `
+            -NoNewWindow
+      # - name: Run all tests
+      #   run : dotnet test --no-build --configuration Debug
       - name: Run Unit Tests
-        run: dotnet test --no-build --configuration Debug --filter FullyQualifiedName~TestsUnit
         working-directory: TestsUnit
+        run: dotnet test TestsUnit.csproj \
+          --no-build \
+          --configuration Debug
       - name: Run Playwright Tests
-        run: dotnet test --no-build --configuration Debug --filter FullyQualifiedName~TestsPlaywright
         working-directory: TestsPlaywright
+        run: dotnet test TestsPlaywright.csproj \
+          --no-build \
+          --configuration Debug
