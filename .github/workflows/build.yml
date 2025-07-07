@@ -18,6 +18,8 @@ jobs:
           dotnet-version: '10.0.x'
       - name: Build solution
         run: dotnet build ManufacturerManagerWithPlaywrightAndCICD.sln -c Debug -p:Platform="Any CPU"
+      - name: Debug - list all csproj
+        run: ls -R ${{ github.workspace }} | grep '\.csproj'
       - name: Install Playwright CLI
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
@@ -29,7 +31,7 @@ jobs:
         working-directory: TestsPlaywright
       - name: Start test server
         run:  dotnet run --project TestsPlaywright/MMUserInterface.csproj --no-build --urls "https://localhost:5245"
-      - name: Run All Tests
+      - name: Run all tests
         run : dotnet test --no-build --configuration Debug
       - name: Run Unit Tests
         run: dotnet test --no-build --configuration Debug --filter FullyQualifiedName~TestsUnit
