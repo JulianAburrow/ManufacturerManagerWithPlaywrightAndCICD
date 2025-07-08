@@ -37,7 +37,7 @@ jobs:
     - name: Start UserInterface with HTTPS
       run: |
         dotnet dev-certs https --trust
-        Start-Process dotnet -ArgumentList "run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --urls https://localhost:5245"
+        Start-Process dotnet -ArgumentList "run --project 'D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj' --urls https://localhost:5245"
         Start-Sleep -Seconds 10
       shell: pwsh
 
