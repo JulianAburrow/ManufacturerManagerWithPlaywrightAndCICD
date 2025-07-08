@@ -1,0 +1,48 @@
+name: Build and Test (.NET on Windows with Playwright)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build solution
+      run: dotnet build --no-restore
+
+    - name: Run unit tests
+      run: dotnet test TestsUnit.csproj
+        --no-build
+        --configuration Debug
+
+    - name: Install Playwright browsers (for .NET)
+      run: dotnet tool run playwright install --with-deps
+      working-directory: TestsPlaywright
+
+    - name: Start UserInterface with HTTPS
+      run: |
+        dotnet dev-certs https --trust
+        Start-Process dotnet -ArgumentList "run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --urls https://localhost:5245"
+        Start-Sleep -Seconds 10
+      shell: pwsh
+
+    - name: Run Playwright Tests
+      working-directory: TestsPlaywright
+      run: dotnet test TestsPlaywright.csproj
+        --no-build
+        --configuration Debug
