@@ -30,7 +30,7 @@ jobs:
           $args = @(
             'run'
             '--project'
-            "$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj"
+            "$env:GITHUB_WORKSPACE/MMUserInterface/MMUserInterface.csproj"
             '--no-build'
             '--urls'
             'http://localhost:5245'
