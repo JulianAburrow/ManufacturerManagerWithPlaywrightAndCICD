@@ -26,11 +26,18 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "⏳ Launching web server and capturing logs…"
-          Start-Process dotnet `
-            -ArgumentList 'run',`
-                     '--project',"$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj"',`
-                     '--no-build',`
-                     '--urls','http://localhost:5245' `
+          # Build an array of arguments so quoting is unambiguous
+          $args = @(
+            'run'
+            '--project'
+            "$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj"
+            '--no-build'
+            '--urls'
+            'http://localhost:5245'
+          )
+
+          Start-Process -FilePath dotnet `
+            -ArgumentList $args `
             -RedirectStandardOutput server.log `
             -RedirectStandardError server.err `
             -NoNewWindow
