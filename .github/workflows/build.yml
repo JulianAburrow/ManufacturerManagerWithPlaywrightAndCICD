@@ -35,9 +35,15 @@ jobs:
       run: dotnet tool restore
       working-directory: TestsPlaywright
 
-    - name: Install Playwright browsers (for .NET)
-      run: dotnet tool run playwright install --with-deps
-      working-directory: TestsPlaywright
+    - name: Install Playwright CLI (no manifest)
+      run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
+    
+    - name: Install Playwright browsers
+      run: tools/playwright install --with-deps
+
+    - name: Run Playwright tests over HTTPS
+      run: dotnet test TestsPlaywright.csproj
+        -- TestRunParameters.Parameter\(name=\"UseHttps\",value=\"true\"\)
 
     # - name: Start UserInterface with HTTPS
     #   run: |
