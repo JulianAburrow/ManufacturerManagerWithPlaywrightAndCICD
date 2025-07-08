@@ -31,9 +31,9 @@ jobs:
         --configuration Debug
       working-directory: TestsUnit
 
-    # - name: Install Playwright browsers (for .NET)
-    #   run: dotnet tool run playwright install --with-deps
-    #   working-directory: TestsPlaywright
+    - name: Install Playwright browsers (for .NET)
+      run: dotnet tool run playwright install --with-deps
+      working-directory: TestsPlaywright
 
     # - name: Start UserInterface with HTTPS
     #   run: |
