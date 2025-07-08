@@ -22,14 +22,18 @@ jobs:
         run: dotnet tool install --global Microsoft.Playwright.CLI
       - name: Generate Playwright script
         run: playwright install --with-deps
-      - name: Start test server
+      - name: Start test server (with logging)
         shell: pwsh
         run: |
-          Write-Host '⏳ Launching web server…'
-          # Kick it off in the background
+          Write-Host "⏳ Launching web server and capturing logs…"
           Start-Process dotnet `
-          -ArgumentList 'run --project "D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj" --no-build --urls http://localhost:5245' `
-          -NoNewWindow
+            -ArgumentList 'run',`
+                     '--project',"$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj',`
+                     '--no-build',`
+                     '--urls','http://localhost:5245' `
+            -RedirectStandardOutput server.log `
+            -RedirectStandardError server.err `
+            -NoNewWindow
       - name: Wait for HTTP server
         shell: pwsh
         run: |
@@ -46,6 +50,14 @@ jobs:
           }
           Write-Error '❌ Server failed to start within 30s'
           exit 1
+      - name: Dump server logs on failure
+        if: failure()
+        shell: pwsh
+        run: |
+          Write-Host '--- SERVER STDOUT (server.log) ---'
+          if (Test-Path server.log) { Get-Content server.log } else { Write-Host 'server.log not found' }
+          Write-Host '--- SERVER STDERR (server.err) ---'
+          if (Test-Path server.err) { Get-Content server.err } else { Write-Host 'server.err not found' }
       - name: Run Unit Tests
         working-directory: TestsUnit
         run: dotnet test TestsUnit.csproj
