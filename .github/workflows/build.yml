@@ -41,6 +41,14 @@ jobs:
     - name: Install Playwright browsers
       run: tools/playwright install --with-deps
 
+    - name: Start MMUserInterface over HTTPS
+      shell: pwsh
+      run: |
+        dotnet dev-certs https
+        Start-Process dotnet -ArgumentList "run --project MMUserInterface/MMUserInterface.csproj --no-build --urls https://localhost:5245"
+        Start-Sleep -Seconds 10
+      working-directory: ManufacturerManagerWithPlaywrightAndCICD
+
     - name: Run Playwright tests over HTTPS
       shell: pwsh
       run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
