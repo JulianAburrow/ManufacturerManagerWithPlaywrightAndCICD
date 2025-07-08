@@ -30,6 +30,10 @@ jobs:
         --no-build
         --configuration Debug
       working-directory: TestsUnit
+    
+    - name: Restore .NET tools
+      run: dotnet tool restore
+      working-directory: TestsPlaywright
 
     - name: Install Playwright browsers (for .NET)
       run: dotnet tool run playwright install --with-deps
