@@ -28,7 +28,7 @@ jobs:
           Write-Host "⏳ Launching web server and capturing logs…"
           Start-Process dotnet `
             -ArgumentList 'run',`
-                     '--project',"$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj',`
+                     '--project',"$env:GITHUB_WORKSPACE/src/MMUserInterface/MMUserInterface.csproj"',`
                      '--no-build',`
                      '--urls','http://localhost:5245' `
             -RedirectStandardOutput server.log `
