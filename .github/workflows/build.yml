@@ -53,8 +53,9 @@ jobs:
       shell: pwsh
       run: |
         dotnet dev-certs https --trust
-        dotnet run --no-build --urls https://localhost:5245 &
+        dotnet run --no-build --urls https://localhost:5245 *> server-log.txt &
         Start-Sleep -Seconds 10
+        Get-Content server-log.txt
       working-directory: MMUserInterface
 
     - name: Run Playwright tests over HTTPS
