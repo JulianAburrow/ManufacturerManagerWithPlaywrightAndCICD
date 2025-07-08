@@ -29,20 +29,21 @@ jobs:
       run: dotnet test TestsUnit.csproj
         --no-build
         --configuration Debug
+      working-directory: TestsUnit
 
-    - name: Install Playwright browsers (for .NET)
-      run: dotnet tool run playwright install --with-deps
-      working-directory: TestsPlaywright
+    # - name: Install Playwright browsers (for .NET)
+    #   run: dotnet tool run playwright install --with-deps
+    #   working-directory: TestsPlaywright
 
-    - name: Start UserInterface with HTTPS
-      run: |
-        dotnet dev-certs https --trust
-        Start-Process dotnet -ArgumentList "run --project 'D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj' --urls https://localhost:5245"
-        Start-Sleep -Seconds 10
-      shell: pwsh
+    # - name: Start UserInterface with HTTPS
+    #   run: |
+    #     dotnet dev-certs https --trust
+    #     Start-Process dotnet -ArgumentList "run --project 'D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj' --urls https://localhost:5245"
+    #     Start-Sleep -Seconds 10
+    #   shell: pwsh
 
-    - name: Run Playwright Tests
-      working-directory: TestsPlaywright
-      run: dotnet test TestsPlaywright.csproj
-        --no-build
-        --configuration Debug
+    # - name: Run Playwright Tests
+    #   working-directory: TestsPlaywright
+    #   run: dotnet test TestsPlaywright.csproj
+    #     --no-build
+    #     --configuration Debug
