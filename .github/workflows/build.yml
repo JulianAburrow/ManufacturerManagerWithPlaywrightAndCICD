@@ -52,11 +52,10 @@ jobs:
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
       run: |
-        dotnet dev-certs https
-        Start-Process dotnet -ArgumentList "run --no-build --urls https://localhost:5245"
+        dotnet dev-certs https --trust
+        dotnet run --no-build --urls https://localhost:5245 &
         Start-Sleep -Seconds 10
       working-directory: MMUserInterface
-
 
     - name: Run Playwright tests over HTTPS
       shell: pwsh
