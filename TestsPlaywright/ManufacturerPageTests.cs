@@ -10,7 +10,11 @@ public class ManufacturerPageTests
         {
             Headless = GlobalValues.IsHeadless
         });
-        var page = await browser.NewPageAsync();
+        await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            IgnoreHTTPSErrors = true
+        });
+        var page = await context.NewPageAsync();
 
         await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", new PageGotoOptions
         {
@@ -29,7 +33,11 @@ public class ManufacturerPageTests
         {
             Headless = GlobalValues.IsHeadless
         });
-        var page = await browser.NewPageAsync();
+        await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            IgnoreHTTPSErrors = true
+        });
+        var page = await context.NewPageAsync();
         await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturer/create", new PageGotoOptions
         {
             WaitUntil = WaitUntilState.NetworkIdle

@@ -10,7 +10,12 @@ public class HomePageTests
         {
             Headless = GlobalValues.IsHeadless
         });
-        var page = await browser.NewPageAsync();
+        await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
+        {
+            IgnoreHTTPSErrors = true
+        });
+
+        var page = await context.NewPageAsync();
         await page.GotoAsync(GlobalValues.BaseUrl, new PageGotoOptions
         {
             WaitUntil = WaitUntilState.NetworkIdle
