@@ -2,7 +2,7 @@ name: Build and Test (.NET on Windows with Playwright)
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, feature/* ]
   pull_request:
     branches: [ main ]
 
