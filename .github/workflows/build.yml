@@ -42,8 +42,9 @@ jobs:
       run: tools/playwright install --with-deps
 
     - name: Run Playwright tests over HTTPS
-      run: dotnet test TestsPlaywright.csproj
-        -- TestRunParameters.Parameter\(name=\"UseHttps\",value=\"true\"\)
+      shell: pwsh
+      run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
+      working-directory: TestsPlaywright
 
     # - name: Start UserInterface with HTTPS
     #   run: |
