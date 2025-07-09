@@ -53,6 +53,7 @@ jobs:
       run: |
         dotnet dev-certs https --clean
         dotnet dev-certs https --trust
+      shell: pwsh
 
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
