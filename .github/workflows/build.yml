@@ -84,12 +84,12 @@ jobs:
         Get-Content $logFile
       working-directory: MMUserInterface
 
-    - name: Wait for MMUserInterface to respond over HTTPS
+    - name: Wait for MMUserInterface root to respond over HTTPS
       shell: pwsh
       run: |
         $retries = 6
         $delay = 5
-        $uri = "https://127.0.0.1:5245/manufacturers/index"
+        $uri = "https://127.0.0.1:5245/"
 
         Write-Host "🔎 Checking MMUserInterface readiness at $uri"
         for ($i = 0; $i -lt $retries; $i++) {
@@ -103,7 +103,6 @@ jobs:
           }
         }
 
-        # If the server didn't respond after all retries, fail gracefully
         if ($i -eq $retries) {
           Write-Error "❌ Server did not respond after $($retries * $delay) seconds."
           exit 1
