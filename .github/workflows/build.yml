@@ -1,4 +1,4 @@
-name: Build and Test (.NET on Windows with Playwright)
+﻿name: Build and Test (.NET on Windows with Playwright)
 
 on:
   push:
@@ -30,20 +30,32 @@ jobs:
         --no-build
         --configuration Debug
       working-directory: TestsUnit
+    
+    - name: Restore .NET tools
+      run: dotnet tool restore
+      working-directory: TestsPlaywright
 
-    # - name: Install Playwright browsers (for .NET)
-    #   run: dotnet tool run playwright install --with-deps
-    #   working-directory: TestsPlaywright
+    - name: Install Playwright CLI (no manifest)
+      run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
+    
+    - name: Install Playwright browsers
+      run: tools/playwright install --with-deps
 
-    # - name: Start UserInterface with HTTPS
-    #   run: |
-    #     dotnet dev-certs https --trust
-    #     Start-Process dotnet -ArgumentList "run --project 'D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj' --urls https://localhost:5245"
-    #     Start-Sleep -Seconds 10
-    #   shell: pwsh
+    - name: Generate and trust HTTPS development certificate
+      run: |
+        dotnet dev-certs https --clean
+        dotnet dev-certs https
+      shell: pwsh
+    
+    - name: Start MMUserInterface in foreground
+      shell: pwsh
+      run: |
+        Start-Process -FilePath "cmd.exe" `
+          -ArgumentList "/c dotnet run --no-build --urls https://127.0.0.1:5245" `
+          -WorkingDirectory "$env:GITHUB_WORKSPACE\MMUserInterface"
+        Start-Sleep -Seconds 20
 
-    # - name: Run Playwright Tests
-    #   working-directory: TestsPlaywright
-    #   run: dotnet test TestsPlaywright.csproj
-    #     --no-build
-    #     --configuration Debug
+    - name: Run Playwright tests over HTTPS
+      shell: pwsh
+      run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
+      working-directory: TestsPlaywright
