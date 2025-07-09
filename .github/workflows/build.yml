@@ -1,4 +1,4 @@
-name: Build and Test (.NET on Windows with Playwright)
+﻿name: Build and Test (.NET on Windows with Playwright)
 
 on:
   push:
@@ -63,6 +63,31 @@ jobs:
         Start-Sleep -Seconds 15
         Get-Content server-log.txt
       working-directory: MMUserInterface
+
+    - name: Wait for MMUserInterface to respond over HTTPS
+      shell: pwsh
+      run: |
+        $retries = 6
+        $delay = 5
+        $uri = "https://127.0.0.1:5245/manufacturers/index"
+
+        Write-Host "🔎 Checking MMUserInterface readiness at $uri"
+        for ($i = 0; $i -lt $retries; $i++) {
+          try {
+            Invoke-WebRequest -Uri $uri -UseBasicParsing -TimeoutSec 5
+            Write-Host "✅ Server is responsive"
+            break
+          } catch {
+            Write-Host "⏳ Server not ready yet (attempt $($i + 1)/$retries)..."
+            Start-Sleep -Seconds $delay
+          }
+        }
+
+        # If the server didn't respond after all retries, fail gracefully
+        if ($i -eq $retries) {
+          Write-Error "❌ Server did not respond after $($retries * $delay) seconds."
+          exit 1
+        }
 
     - name: Run Playwright tests over HTTPS
       shell: pwsh
