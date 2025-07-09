@@ -49,6 +49,11 @@ jobs:
     #     Start-Sleep -Seconds 10
     #   working-directory: ManufacturerManagerWithPlaywrightAndCICD
 
+    - name: Generate and trust HTTPS development certificate
+      run: |
+        dotnet dev-certs https --clean
+        dotnet dev-certs https --trust
+
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
       run: |
