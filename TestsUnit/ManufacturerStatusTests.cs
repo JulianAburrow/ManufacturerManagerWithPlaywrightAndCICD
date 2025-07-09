@@ -1,4 +1,4 @@
-﻿namespace UnitTests;
+﻿namespace TestsUnit;
 
 public class ManufacturerStatusTests
 {

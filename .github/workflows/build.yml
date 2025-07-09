@@ -1,4 +1,4 @@
-name: Build and Test (.NET on Windows with Playwright)
+﻿name: Build and Test (.NET on Windows with Playwright)
 
 on:
   push:
