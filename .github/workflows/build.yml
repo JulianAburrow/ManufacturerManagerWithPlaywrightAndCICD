@@ -55,14 +55,25 @@ jobs:
         dotnet dev-certs https
       shell: pwsh
 
+    # - name: Start MMUserInterface over HTTPS
+    #   shell: pwsh
+    #   run: |
+    #     #dotnet dev-certs https --trust
+    #     dotnet run --no-build --urls https://127.0.0.1:5245 *> server-log.txt &
+    #     Start-Sleep -Seconds 15
+    #     Get-Content server-log.txt
+    #   working-directory: MMUserInterface
+
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
       run: |
-        #dotnet dev-certs https --trust
-        dotnet run --no-build --urls https://127.0.0.1:5245 *> server-log.txt &
-        Start-Sleep -Seconds 15
+        dotnet dev-certs https
+        Start-Process -FilePath "dotnet" `
+          -ArgumentList "run --no-build --urls https://127.0.0.1:5245" `
+          -WorkingDirectory "${{ github.workspace }}\MMUserInterface" `
+          -NoNewWindow
+        Start-Sleep -Seconds 20
         Get-Content server-log.txt
-      working-directory: MMUserInterface
 
     - name: Wait for MMUserInterface to respond over HTTPS
       shell: pwsh
