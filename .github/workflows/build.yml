@@ -64,16 +64,25 @@ jobs:
     #     Get-Content server-log.txt
     #   working-directory: MMUserInterface
 
+    # - name: Start MMUserInterface over HTTPS
+    #   shell: pwsh
+    #   run: |
+    #     dotnet dev-certs https
+    #     Start-Process -FilePath "dotnet" `
+    #       -ArgumentList "run --no-build --urls https://127.0.0.1:5245" `
+    #       -WorkingDirectory "${{ github.workspace }}\MMUserInterface" `
+    #       -NoNewWindow
+    #     Start-Sleep -Seconds 20
+    #     Get-Content server-log.txt
+
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
       run: |
-        dotnet dev-certs https
-        Start-Process -FilePath "dotnet" `
-          -ArgumentList "run --no-build --urls https://127.0.0.1:5245" `
-          -WorkingDirectory "${{ github.workspace }}\MMUserInterface" `
-          -NoNewWindow
+        $logFile = "$env:GITHUB_WORKSPACE\MMUserInterface\server-log.txt"
+        dotnet run --no-build --urls https://127.0.0.1:5245 *> $logFile &
         Start-Sleep -Seconds 20
-        Get-Content server-log.txt
+        Get-Content $logFile
+      working-directory: MMUserInterface
 
     - name: Wait for MMUserInterface to respond over HTTPS
       shell: pwsh
