@@ -45,7 +45,7 @@ jobs:
     #   shell: pwsh
     #   run: |
     #     dotnet dev-certs https
-    #     Start-Process dotnet -ArgumentList "run --project MMUserInterface/MMUserInterface.csproj --no-build --urls https://localhost:5245"
+    #     Start-Process dotnet -ArgumentList "run --project MMUserInterface/MMUserInterface.csproj --no-build --urls https://127.0.0.1:5245"
     #     Start-Sleep -Seconds 10
     #   working-directory: ManufacturerManagerWithPlaywrightAndCICD
 
@@ -59,8 +59,8 @@ jobs:
       shell: pwsh
       run: |
         #dotnet dev-certs https --trust
-        dotnet run --no-build --urls https://localhost:5245 *> server-log.txt &
-        Start-Sleep -Seconds 10
+        dotnet run --no-build --urls https://127.0.0.1:5245 *> server-log.txt &
+        Start-Sleep -Seconds 15
         Get-Content server-log.txt
       working-directory: MMUserInterface
 
