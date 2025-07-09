@@ -41,39 +41,11 @@ jobs:
     - name: Install Playwright browsers
       run: tools/playwright install --with-deps
 
-    # - name: Start MMUserInterface over HTTPS
-    #   shell: pwsh
-    #   run: |
-    #     dotnet dev-certs https
-    #     Start-Process dotnet -ArgumentList "run --project MMUserInterface/MMUserInterface.csproj --no-build --urls https://127.0.0.1:5245"
-    #     Start-Sleep -Seconds 10
-    #   working-directory: ManufacturerManagerWithPlaywrightAndCICD
-
     - name: Generate and trust HTTPS development certificate
       run: |
         dotnet dev-certs https --clean
         dotnet dev-certs https
       shell: pwsh
-
-    # - name: Start MMUserInterface over HTTPS
-    #   shell: pwsh
-    #   run: |
-    #     #dotnet dev-certs https --trust
-    #     dotnet run --no-build --urls https://127.0.0.1:5245 *> server-log.txt &
-    #     Start-Sleep -Seconds 15
-    #     Get-Content server-log.txt
-    #   working-directory: MMUserInterface
-
-    # - name: Start MMUserInterface over HTTPS
-    #   shell: pwsh
-    #   run: |
-    #     dotnet dev-certs https
-    #     Start-Process -FilePath "dotnet" `
-    #       -ArgumentList "run --no-build --urls https://127.0.0.1:5245" `
-    #       -WorkingDirectory "${{ github.workspace }}\MMUserInterface" `
-    #       -NoNewWindow
-    #     Start-Sleep -Seconds 20
-    #     Get-Content server-log.txt
     
     - name: Start MMUserInterface in foreground
       shell: pwsh
@@ -87,16 +59,3 @@ jobs:
       shell: pwsh
       run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
       working-directory: TestsPlaywright
-
-    # - name: Start UserInterface with HTTPS
-    #   run: |
-    #     dotnet dev-certs https --trust
-    #     Start-Process dotnet -ArgumentList "run --project 'D:\a\ManufacturerManagerWithPlaywrightAndCICD\ManufacturerManagerWithPlaywrightAndCICD\MMUserInterface\MMUserInterface.csproj' --urls https://localhost:5245"
-    #     Start-Sleep -Seconds 10
-    #   shell: pwsh
-
-    # - name: Run Playwright Tests
-    #   working-directory: TestsPlaywright
-    #   run: dotnet test TestsPlaywright.csproj
-    #     --no-build
-    #     --configuration Debug
