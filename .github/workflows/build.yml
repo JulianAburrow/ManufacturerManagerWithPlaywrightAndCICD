@@ -75,13 +75,35 @@ jobs:
     #     Start-Sleep -Seconds 20
     #     Get-Content server-log.txt
 
-    - name: Start MMUserInterface over HTTPS
+    - name: Start MMUserInterface over HTTPS and wait
       shell: pwsh
       run: |
         $logFile = "$env:GITHUB_WORKSPACE\MMUserInterface\server-log.txt"
-        dotnet run --no-build --urls https://127.0.0.1:5245 *> $logFile &
-        Start-Sleep -Seconds 20
-        Get-Content $logFile
+        $job = Start-Job -ScriptBlock {
+          dotnet run --no-build --urls https://127.0.0.1:5245
+        }
+
+        $maxRetries = 6
+        $delaySeconds = 5
+        $uri = "https://127.0.0.1:5245/"
+
+        Write-Host "🔎 Waiting for server to respond at $uri"
+        for ($i = 0; $i -lt $maxRetries; $i++) {
+          try {
+            Invoke-WebRequest -Uri $uri -UseBasicParsing -TimeoutSec 5
+            Write-Host "✅ Server is responsive"
+            break
+          } catch {
+            Write-Host "⏳ Server not ready yet (attempt $($i + 1)/$maxRetries)..."
+            Start-Sleep -Seconds $delaySeconds
+          }
+        }
+
+        if ($i -eq $maxRetries) {
+          Write-Error "❌ Server did not respond after $($maxRetries * $delaySeconds) seconds."
+          Stop-Job $job -Force
+          exit 1
+        }
       working-directory: MMUserInterface
 
     - name: Wait for MMUserInterface root to respond over HTTPS
