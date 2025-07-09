@@ -52,13 +52,13 @@ jobs:
     - name: Generate and trust HTTPS development certificate
       run: |
         dotnet dev-certs https --clean
-        dotnet dev-certs https --trust
+        dotnet dev-certs https
       shell: pwsh
 
     - name: Start MMUserInterface over HTTPS
       shell: pwsh
       run: |
-        dotnet dev-certs https --trust
+        #dotnet dev-certs https --trust
         dotnet run --no-build --urls https://localhost:5245 *> server-log.txt &
         Start-Sleep -Seconds 10
         Get-Content server-log.txt
