@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -46,14 +46,36 @@ jobs:
         dotnet dev-certs https --clean
         dotnet dev-certs https
       shell: pwsh
-    
-    - name: Start MMUserInterface in foreground
+
+    - name: Docker login
       shell: pwsh
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        Start-Process -FilePath "cmd.exe" `
-          -ArgumentList "/c dotnet run --no-build --urls https://127.0.0.1:5245" `
-          -WorkingDirectory "$env:GITHUB_WORKSPACE\MMUserInterface"
-        Start-Sleep -Seconds 20
+        $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+
+    - name: Start Dockerized SQL Server
+      shell: bash
+      env:
+        SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      run: |
+        set -e  # fail on any error
+
+        docker pull jaburrow/manufacturermanagerseeded:latest
+
+        docker run -d --name seeded-db \
+          -e "ACCEPT_EULA=Y" \
+          -e "SA_PASSWORD=$SA_PASSWORD" \
+          -p 11433:1433 \
+          jaburrow/manufacturermanagerseeded:latest
+    
+    - name: Start MMUserInterface in background
+      shell: bash
+      run: |
+        dotnet run --no-build --urls https://127.0.0.1:5245 &
+        sleep 20
+      working-directory: MMUserInterface
 
     - name: Run Playwright tests over HTTPS
       shell: pwsh
