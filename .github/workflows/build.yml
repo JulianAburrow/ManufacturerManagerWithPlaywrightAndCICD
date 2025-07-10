@@ -47,7 +47,28 @@ jobs:
         dotnet dev-certs https
       shell: pwsh
 
-    - name: Authenticate with Docker Hub
+    # - name: Authenticate with Docker Hub
+    #   shell: pwsh
+    #   env:
+    #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+    #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    #   run: |
+    #     echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+
+    # - name: Start Dockerized SQL Server
+    #   shell: pwsh
+    #   env:
+    #     SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   run: |
+    #     docker pull jaburrow/manufacturermanagerseeded:latest
+    #     docker run -d --name seeded-db `
+    #       -e "ACCEPT_EULA=Y" `
+    #       -e "SA_PASSWORD=$env:SA_PASSWORD" `
+    #       -p 1433:1433 `
+    #       jaburrow/manufacturermanagerseeded:latest
+    #     Start-Sleep -Seconds 15
+
+    - name: Docker login
       shell: pwsh
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -55,18 +76,10 @@ jobs:
       run: |
         echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
 
-    - name: Start Dockerized SQL Server
+    - name: Pull seeded image
       shell: pwsh
-      env:
-        SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
         docker pull jaburrow/manufacturermanagerseeded:latest
-        docker run -d --name seeded-db `
-          -e "ACCEPT_EULA=Y" `
-          -e "SA_PASSWORD=$env:SA_PASSWORD" `
-          -p 1433:1433 `
-          jaburrow/manufacturermanagerseeded:latest
-        Start-Sleep -Seconds 15
     
     - name: Start MMUserInterface in foreground
       shell: pwsh
