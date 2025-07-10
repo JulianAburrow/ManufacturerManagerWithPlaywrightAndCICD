@@ -47,6 +47,14 @@ jobs:
         dotnet dev-certs https
       shell: pwsh
 
+    - name: Authenticate with Docker Hub
+      shell: pwsh
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: |
+        echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+
     - name: Start Dockerized SQL Server
       shell: pwsh
       env:
