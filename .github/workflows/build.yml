@@ -59,6 +59,15 @@ jobs:
       shell: pwsh
       run: |
         docker pull jaburrow/manufacturermanagerseeded:latest
+
+    - name: Check DB container status
+      shell: bash
+      run: |
+        echo "🛠️ Docker container status:"
+        docker ps -a
+
+        echo "🧠 Container logs:"
+        docker logs seeded-db || echo "No logs available"
     
     - name: Start MMUserInterface in background
       shell: bash
