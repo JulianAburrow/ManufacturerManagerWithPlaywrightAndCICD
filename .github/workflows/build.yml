@@ -55,27 +55,31 @@ jobs:
       run: |
         echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
 
-    - name: Start Dockerized SQL Server (with logging)
+    - name: 🐳 Start Dockerized SQL Server with diagnostics
       shell: bash
       env:
         SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        set -e  # Stop on error
-        echo "🔐 Logging in to Docker Hub..."
-        echo $DOCKER_PASSWORD | docker login --username $DOCKER_USERNAME --password-stdin
+        set -e  # fail on any error
 
-        echo "🐳 Pulling image..."
+        echo "📦 Pulling image..."
         docker pull jaburrow/manufacturermanagerseeded:latest
 
-        echo "🚀 Starting container..."
+        echo "🚀 Running container..."
         docker run -d --name seeded-db \
           -e "ACCEPT_EULA=Y" \
           -e "SA_PASSWORD=$SA_PASSWORD" \
           -p 11433:1433 \
           jaburrow/manufacturermanagerseeded:latest
 
-        echo "🔍 Checking running containers..."
+        echo "🔍 Container status:"
         docker ps -a
+
+        echo "📋 Container logs:"
+        docker logs seeded-db || echo "No logs found"
+
+        echo "⏳ Waiting for SQL port to open..."
+        timeout 90 bash -c 'until echo > /dev/tcp/localhost/11433; do sleep 1; done'
 
     - name: Pull seeded image
       shell: pwsh
