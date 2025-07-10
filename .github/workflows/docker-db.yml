@@ -46,19 +46,6 @@ jobs:
         dotnet dev-certs https --clean
         dotnet dev-certs https
       shell: pwsh
-
-    - name: Start Dockerized SQL Server
-      shell: pwsh
-      env:
-        SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      run: |
-        docker pull jaburrow/manufacturermanagerseeded:latest
-        docker run -d --name seeded-db `
-          -e "ACCEPT_EULA=Y" `
-          -e "SA_PASSWORD=$env:SA_PASSWORD" `
-          -p 1433:1433 `
-          jaburrow/manufacturermanagerseeded:latest
-        Start-Sleep -Seconds 15
     
     - name: Start MMUserInterface in foreground
       shell: pwsh
