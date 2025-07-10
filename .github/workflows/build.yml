@@ -60,6 +60,10 @@ jobs:
       run: |
         docker pull jaburrow/manufacturermanagerseeded:latest
 
+    - name: List all running containers
+      shell: bash
+      run: docker ps -a
+
     - name: Check DB container status
       shell: bash
       run: |
