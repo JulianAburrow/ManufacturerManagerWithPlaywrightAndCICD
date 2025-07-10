@@ -47,27 +47,6 @@ jobs:
         dotnet dev-certs https
       shell: pwsh
 
-    # - name: Authenticate with Docker Hub
-    #   shell: pwsh
-    #   env:
-    #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-    #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-    #   run: |
-    #     echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
-
-    # - name: Start Dockerized SQL Server
-    #   shell: pwsh
-    #   env:
-    #     SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-    #   run: |
-    #     docker pull jaburrow/manufacturermanagerseeded:latest
-    #     docker run -d --name seeded-db `
-    #       -e "ACCEPT_EULA=Y" `
-    #       -e "SA_PASSWORD=$env:SA_PASSWORD" `
-    #       -p 1433:1433 `
-    #       jaburrow/manufacturermanagerseeded:latest
-    #     Start-Sleep -Seconds 15
-
     - name: Docker login
       shell: pwsh
       env:
@@ -87,6 +66,12 @@ jobs:
         dotnet run --no-build --urls https://127.0.0.1:5245 &
         sleep 20
       working-directory: MMUserInterface
+
+    - name: Verify SQL connection (diagnostic)
+      shell: bash
+      run: |
+        echo "Waiting for DB to respond..."
+        timeout 30 bash -c 'until nc -z localhost 11433; do sleep 1; done'
 
     - name: Run Playwright tests over HTTPS
       shell: pwsh
