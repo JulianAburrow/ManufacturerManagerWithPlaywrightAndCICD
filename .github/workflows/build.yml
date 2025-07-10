@@ -53,51 +53,50 @@ jobs:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+        # echo $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+        $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
 
-    - name: 🐳 Start Dockerized SQL Server with diagnostics
+    - name: Start Dockerized SQL Server
       shell: bash
       env:
         SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
         set -e  # fail on any error
 
-        echo "📦 Pulling image..."
         docker pull jaburrow/manufacturermanagerseeded:latest
 
-        echo "🚀 Running container..."
         docker run -d --name seeded-db \
           -e "ACCEPT_EULA=Y" \
           -e "SA_PASSWORD=$SA_PASSWORD" \
           -p 11433:1433 \
           jaburrow/manufacturermanagerseeded:latest
 
-        echo "🔍 Container status:"
-        docker ps -a
+        # echo "🔍 Container status:"
+        # docker ps -a
 
-        echo "📋 Container logs:"
-        docker logs seeded-db || echo "No logs found"
+        # echo "📋 Container logs:"
+        # docker logs seeded-db || echo "No logs found"
 
-        echo "⏳ Waiting for SQL port to open..."
-        timeout 90 bash -c 'until echo > /dev/tcp/localhost/11433; do sleep 1; done'
+        # echo "⏳ Waiting for SQL port to open..."
+        # timeout 90 bash -c 'until echo > /dev/tcp/localhost/11433; do sleep 1; done'
 
     - name: Pull seeded image
       shell: pwsh
       run: |
         docker pull jaburrow/manufacturermanagerseeded:latest
 
-    - name: List all running containers
-      shell: bash
-      run: docker ps -a
+    # - name: List all running containers
+    #   shell: bash
+    #   run: docker ps -a
 
-    - name: Check DB container status
-      shell: bash
-      run: |
-        echo "🛠️ Docker container status:"
-        docker ps -a
+    # - name: Check DB container status
+    #   shell: bash
+    #   run: |
+    #     echo "🛠️ Docker container status:"
+    #     docker ps -a
 
-        echo "🧠 Container logs:"
-        docker logs seeded-db || echo "No logs available"
+    #     echo "🧠 Container logs:"
+    #     docker logs seeded-db || echo "No logs available"
     
     - name: Start MMUserInterface in background
       shell: bash
