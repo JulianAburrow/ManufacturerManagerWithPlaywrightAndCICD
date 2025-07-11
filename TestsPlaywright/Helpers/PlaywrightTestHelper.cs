@@ -1,4 +1,4 @@
-﻿namespace TestsPlaywright;
+﻿namespace TestsPlaywright.Helpers;
 
 public static class PlaywrightTestHelper
 {
