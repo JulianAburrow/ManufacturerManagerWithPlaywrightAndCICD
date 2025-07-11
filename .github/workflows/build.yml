@@ -94,8 +94,8 @@ jobs:
     - name: Check if MMUserInterface is up
       shell: bash
       run: |
-        for i in {1..0}; do
-          if curl -k --silent --fail https://127.0.0.1:5245/; then
+        for i in {1..30}; do
+          if curl -k --silent --fail https://127.0.0.1:5245/ > /dev/null; then
             echo "MMUserInterface is up!"
             exit 0
           fi
