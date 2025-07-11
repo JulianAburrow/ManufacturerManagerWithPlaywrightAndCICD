@@ -5,16 +5,7 @@ public class ManufacturerPageTests
     [Fact]
     public async Task ManufacturerHomePageLoads()
     {
-        using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = GlobalValues.IsHeadless
-        });
-        await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
-        {
-            IgnoreHTTPSErrors = true
-        });
-        var page = await context.NewPageAsync();
+        var page = await PlaywrightTestHelper.CreatePageAsync();
 
         await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", new PageGotoOptions
         {
@@ -28,16 +19,8 @@ public class ManufacturerPageTests
     [Fact]
     public async Task ManufacturerCreatePageLoads()
     {
-        using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = GlobalValues.IsHeadless
-        });
-        await using var context = await browser.NewContextAsync(new BrowserNewContextOptions
-        {
-            IgnoreHTTPSErrors = true
-        });
-        var page = await context.NewPageAsync();
+        var page = await PlaywrightTestHelper.CreatePageAsync();
+
         await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturer/create", new PageGotoOptions
         {
             WaitUntil = WaitUntilState.NetworkIdle
