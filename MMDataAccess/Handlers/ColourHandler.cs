@@ -1,11 +1,8 @@
 ﻿namespace MMDataAccess.Handlers;
 
-public class ColourHandler : IColourHandler
+public class ColourHandler(ManufacturerManagerContext context) : IColourHandler
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ColourHandler(ManufacturerManagerContext context) =>
-        _context = context;
+    private readonly ManufacturerManagerContext _context = context;
 
     public async Task CreateColourAsync(ColourModel colour, bool callSaveChanges)
     {
@@ -27,7 +24,8 @@ public class ColourHandler : IColourHandler
     public async Task<ColourModel> GetColourAsync(int colourId) =>
         await _context.Colours
             .AsNoTracking()
-            .SingleOrDefaultAsync(c => c.ColourId == colourId);
+            .SingleOrDefaultAsync(c => c.ColourId == colourId)
+            ?? throw new ArgumentNullException(nameof(colourId), "Colour not found");
 
     public async Task<List<ColourModel>> GetColoursAsync() =>
         await _context.Colours
