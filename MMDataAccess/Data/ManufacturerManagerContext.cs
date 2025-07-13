@@ -1,11 +1,8 @@
 ﻿namespace MMDataAccess.Data;
 
-public class ManufacturerManagerContext : DbContext
+public class ManufacturerManagerContext(DbContextOptions<ManufacturerManagerContext> options) : DbContext(options)
 {
-    public ManufacturerManagerContext(DbContextOptions<ManufacturerManagerContext> options)
-        : base(options)
-    {
-    }
+    public DbSet<ColourModel> Colours { get; set; }
     public DbSet<ManufacturerModel> Manufacturers { get; set; }
     public DbSet<ManufacturerStatusModel> ManufacturerStatuses { get; set; }
 
@@ -18,6 +15,7 @@ public class ManufacturerManagerContext : DbContext
             property.SetIsUnicode(false);
         }
 
+        builder.ApplyConfiguration(new ColourConfiguration());
         builder.ApplyConfiguration(new ManufacturerConfiguration());
         builder.ApplyConfiguration(new ManufacturerStatusConfiguration());
     }
