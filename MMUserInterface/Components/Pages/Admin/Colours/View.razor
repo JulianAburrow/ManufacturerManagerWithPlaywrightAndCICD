@@ -1,0 +1,27 @@
+﻿@page "/colour/view/{ColourId:int}"
+@inherits ColourBasePageClass
+
+<PageTitle>View Colour</PageTitle>
+
+@if (ColourModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@Colour" />
+    return;
+}
+
+<MudGrid>
+    <MudItem sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudField Label="Name">@ColourModel.Name</MudField>
+            </MudCardContent>
+            <MudCardActions>
+                <a class="btn btn-primary" href="/colour/edit/@ColourModel.ColourId">Edit</a>
+                &nbsp;
+                <a class="btn btn-danger" href="/colour/delete/@ColourModel.ColourId">Delete</a>
+                &nbsp;
+                <a class="btn btn-primary" href="/colours/index">Cancel</a>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>

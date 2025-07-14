@@ -1,0 +1,51 @@
+﻿@page "/colours/index"
+@inherits ColourBasePageClass
+
+<PageTitle>Colours</PageTitle>
+
+@if (Colours == null)
+{
+    <LoadingMessageComponent ValueToShow="@ColourPlural" />
+    return;
+}
+
+<a href="/colour/create" class="btn btn-primary">Create Colour</a>
+
+<br />
+<br />
+
+@if (Colours!.Count == 0)
+{
+    <p>No Colours found.</p>
+    return;
+}
+
+<MudTable
+Items="@Colours"
+SortLabel="SortBy"
+Hover
+RowsPerPage="10"
+FixedHeader
+Height="500px">
+    <HeaderContent>
+        <MudTh title="Sort by Name">
+            <MudTableSortLabel SortBy="new Func<ColourModel, object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>
+            <a class="btn btn-primary" href="/colour/view/@context.ColourId">View</a>
+            &nbsp;
+            <a class="btn btn-primary" href="/colour/edit/@context.ColourId">Edit</a>
+            &nbsp;
+            <a class="btn btn-danger" href="/colour/delete/@context.ColourId">Delete</a>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100, int.MaxValue }" />
+    </PagerContent>
+</MudTable>

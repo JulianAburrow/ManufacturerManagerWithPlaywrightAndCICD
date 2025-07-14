@@ -12,3 +12,4 @@ global using MMUserInterface.Shared.CommonValues;
 global using MMUserInterface.Shared.BasePageClasses;
 global using MudBlazor;
 global using MudBlazor.Services;
+global using System.ComponentModel.DataAnnotations;
