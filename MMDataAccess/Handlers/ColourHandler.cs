@@ -17,7 +17,7 @@ public class ColourHandler(ManufacturerManagerContext context) : IColourHandler
         if (colourToDelete == null)
             return;
         _context.Colours.Remove(colourToDelete);
-        if ( callSaveChanges )
+        if (callSaveChanges)
             await SaveChangesAsync();
     }
 
