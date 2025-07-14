@@ -1,0 +1,29 @@
+﻿@page "/colour/delete/{ColourId:int}"
+@inherits ColourBasePageClass
+
+<PageTitle>Delete Colour</PageTitle>
+
+@if (ColourModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@Colour" />
+    return;
+}
+
+@if (!OkToDelete)
+{
+    <CannotDeleteComponent ObjectType="@Colour" ObjectName="@ColourModel.Name" />
+    return;
+}
+
+<ConfirmDeleteComponent ObjectType="@Colour" ObjectName="@ColourModel.Name" />
+
+<br />
+<br />
+
+@if (OkToDelete)
+{
+    <button class="btn btn-danger" @onclick="DeleteColour">Delete</button>
+    @:&nbsp;
+}
+
+<a class="btn btn-primary" href="/colours/index">Cancel</a>

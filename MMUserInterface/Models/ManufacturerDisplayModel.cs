@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MMUserInterface.Models;
+﻿namespace MMUserInterface.Models;
 
 public class ManufacturerDisplayModel
 {
