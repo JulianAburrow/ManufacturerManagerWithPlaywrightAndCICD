@@ -16,7 +16,7 @@ public partial class Create
 
     private async Task CreateColour()
     {
-        ColourModel.Name = ColourDisplayModel.Name;
+        CopyDisplayModelToModel();
 
         try
         {

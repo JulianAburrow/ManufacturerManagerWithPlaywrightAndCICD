@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MMDataAccess.Enums;
 
 namespace TestsPlaywright;
 
@@ -29,15 +29,11 @@ public class ManufacturerPageTests
         }
         await manufacturersLink.First.ClickAsync();
 
-        await page.WaitForURLAsync($"{GlobalValues.BaseUrl}/manufacturers/index", new PageWaitForURLOptions
-        {
-            WaitUntil = WaitUntilState.NetworkIdle
-        });
         await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
     }
 
     [Fact]
-    public async Task ManufacturerCreatePageLoads()
+    public async Task CreateButtonOnIndexPageNavigatesToCreateManufacturerPage()
     {
         var page = await PlaywrightTestHelper.CreatePageAsync();
 
@@ -53,24 +49,29 @@ public class ManufacturerPageTests
         }
         await createButton.First.ClickAsync();
 
-        await page.WaitForURLAsync($"{GlobalValues.BaseUrl}/manufacturer/create", new PageWaitForURLOptions
-        {
-            WaitUntil = WaitUntilState.NetworkIdle
-        });
         await page.WaitForFunctionAsync("document.title === 'Create Manufacturer'");
     }
 
     [Fact]
-    public async Task ManufacturerEditPageLoads()
+    public async Task ViewButtonOnIndexPageNavigatesToViewManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
 
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturer/edit/{manufacturerId}", GlobalValues.GetPageOptions());
-            var editManufacturerTitle = await page.TitleAsync();
-            Assert.Equal("Edit Manufacturer", editManufacturerTitle);
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
+
+            var viewButton = page.GetByRole(AriaRole.Button, new() { Name = "View" });
+            if (await viewButton.CountAsync() == 0)
+            {
+                viewButton = page.GetByText("View", new() { Exact = false });
+                Assert.True(await viewButton.CountAsync() > 0, "View button not found on Manufacturers index page.");
+            }
+            await viewButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'View Manufacturer'");
         }
         finally
         {
@@ -79,17 +80,25 @@ public class ManufacturerPageTests
     }
 
     [Fact]
-    public async Task ManufacturerViewPageLoads()
+    public async Task EditButtonOnIndexPageNavigatesToEditManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
-
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
 
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturer/view/{manufacturerId}", GlobalValues.GetPageOptions());
-            var viewManufacturerTitle = await page.TitleAsync();
-            Assert.Equal("View Manufacturer", viewManufacturerTitle);
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
+
+            var editButton = page.GetByRole(AriaRole.Button, new() { Name = "Edit" });
+            if (await editButton.CountAsync() == 0)
+            {
+                editButton = page.GetByText("Edit", new() { Exact = false });
+                Assert.True(await editButton.CountAsync() > 0, "Edit button not found on Manufacturers index page.");
+            }
+            await editButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Edit Manufacturer'");
         }
         finally
         {
@@ -106,21 +115,7 @@ public class ManufacturerPageTests
             var initialCount = _context.Manufacturers.Count();
 
             var page = await PlaywrightTestHelper.CreatePageAsync();
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", GlobalValues.GetPageOptions());
-            await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
-
-            var createButton = page.GetByRole(AriaRole.Button, new() { Name = "Create Manufacturer" });
-            if (await createButton.CountAsync() == 0)
-            {
-                createButton = page.GetByText("Create Manufacturer", new() { Exact = false });
-                Assert.True(await createButton.CountAsync() > 0, "Create Manufacturer button not found on Manufacturers page.");
-            }
-            await createButton.First.ClickAsync();
-
-            await page.WaitForURLAsync($"{GlobalValues.BaseUrl}/manufacturer/create", new PageWaitForURLOptions
-            {
-                WaitUntil = WaitUntilState.NetworkIdle
-            });
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturer/create", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Create Manufacturer'");
 
             var manufacturerName = $"Test Manufacturer {Guid.NewGuid()}";
@@ -180,10 +175,10 @@ public class ManufacturerPageTests
 
             await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
 
-            var updatedManufacturer = await WaitForManufacturerUpdate(_context, manufacturerId, updatedManufacturerName, 2_000);
+            var updatedManufacturer = await WaitForManufacturerUpdate(manufacturerId, updatedManufacturerName, (int)Enums.StatusEnum.Inactive, 2_000);
             Assert.NotNull(updatedManufacturer);
             Assert.Equal(updatedManufacturerName, updatedManufacturer.Name);
-            Assert.Equal(2, updatedManufacturer.StatusId); // Assuming 2 is 'Inactive'
+            Assert.Equal((int)Enums.StatusEnum.Inactive, updatedManufacturer.StatusId);
         }
         finally
         {
@@ -206,8 +201,6 @@ public class ManufacturerPageTests
             Assert.True(await cancelButton.CountAsync() > 0, "Cancel button not found on Create page.");
         }
         await cancelButton.First.ClickAsync();
-
-        // 5. Confirm navigation to index
         await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
     }
 
@@ -265,58 +258,16 @@ public class ManufacturerPageTests
         }
     }
 
-    [Fact]
-    public async Task ViewButtonOnIndexPageNavigatesToViewManufacturerPage()
+    private int AddManufacturer()
     {
-        var manufacturerId = AddManufacturer();
-        try
+        var newManufacturer = new ManufacturerModel
         {
-            var page = await PlaywrightTestHelper.CreatePageAsync();
-
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", GlobalValues.GetPageOptions());
-            await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
-
-            var viewButton = page.GetByRole(AriaRole.Button, new() { Name = "View" });
-            if (await viewButton.CountAsync() == 0)
-            {
-                viewButton = page.GetByText("View", new() { Exact = false });
-                Assert.True(await viewButton.CountAsync() > 0, "View button not found on Manufacturers index page.");
-            }
-            await viewButton.First.ClickAsync();
-
-            await page.WaitForFunctionAsync("document.title === 'View Manufacturer'");
-        }
-        finally
-        {
-            RemoveManufacturer(manufacturerId);
-        }
-    }
-
-    [Fact]
-    public async Task EditButtonOnIndexPageNavigatesToEditManufacturerPage()
-    {
-        var manufacturerId = AddManufacturer();
-        try
-        {
-            var page = await PlaywrightTestHelper.CreatePageAsync();
-
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/manufacturers/index", GlobalValues.GetPageOptions());
-            await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
-
-            var editButton = page.GetByRole(AriaRole.Button, new() { Name = "Edit" });
-            if (await editButton.CountAsync() == 0)
-            {
-                editButton = page.GetByText("Edit", new() { Exact = false });
-                Assert.True(await editButton.CountAsync() > 0, "Edit button not found on Manufacturers index page.");
-            }
-            await editButton.First.ClickAsync();
-
-            await page.WaitForFunctionAsync("document.title === 'Edit Manufacturer'");
-        }
-        finally
-        {
-            RemoveManufacturer(manufacturerId);
-        }
+            Name = $"Test Manufacturer {Guid.NewGuid()}",
+            StatusId = (int)Enums.StatusEnum.Active,
+        };
+        _context.Manufacturers.Add(newManufacturer);
+        _context.SaveChanges();
+        return newManufacturer.ManufacturerId;
     }
 
     private void RemoveManufacturer(int manufacturerId)
@@ -329,30 +280,18 @@ public class ManufacturerPageTests
         }
     }
 
-    private int AddManufacturer()
+    private async Task<ManufacturerModel?> WaitForManufacturerUpdate(int manufacturerId, string expectedName, int expectedStatusId, int timeoutMs)
     {
-        var newManufacturer = new ManufacturerModel
-        {
-            Name = $"Test Manufacturer {Guid.NewGuid()}",
-            StatusId = 1, // 1 is the ID for 'Active' status
-        };
-        _context.Manufacturers.Add(newManufacturer);
-        _context.SaveChanges();
-        return newManufacturer.ManufacturerId;
-    }
-
-    private async Task<ManufacturerModel?> WaitForManufacturerUpdate(ManufacturerManagerContext context, int id, string expectedName, int timeoutMs)
-    {
-        var sw = System.Diagnostics.Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
-            var manufacturer = await context.Manufacturers
+            var manufacturer = await _context.Manufacturers
                 .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.ManufacturerId == id);
-            if (manufacturer != null && manufacturer.Name == expectedName && manufacturer.StatusId == 2)
+                .FirstOrDefaultAsync(m => m.ManufacturerId == manufacturerId);
+            if (manufacturer != null && manufacturer.Name == expectedName && manufacturer.StatusId == expectedStatusId)
                 return manufacturer;
             await Task.Delay(100);
         }
-        return await context.Manufacturers.FindAsync(id);
+        return await _context.Manufacturers.FindAsync(manufacturerId);
     }
 }

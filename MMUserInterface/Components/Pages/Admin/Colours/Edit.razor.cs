@@ -5,7 +5,7 @@ public partial class Edit
     protected override async Task OnInitializedAsync()
     {
         ColourModel = await ColourHandler.GetColourAsync(ColourId);
-        ColourDisplayModel.Name = ColourModel.Name;
+        CopyModelToDisplayModel();
         MainLayout.SetHeaderValue("Edit Colour");
     }
 
@@ -21,7 +21,7 @@ public partial class Edit
 
     private async Task UpdateColour()
     {
-        ColourModel.Name = ColourDisplayModel.Name;
+        CopyDisplayModelToModel();
 
         try
         {
