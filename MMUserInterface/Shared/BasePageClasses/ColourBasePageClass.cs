@@ -18,4 +18,14 @@ public class ColourBasePageClass : BasePageClass
     {
         return new ("Colours", "/colours/index", isDisabled);
     }
+
+    protected void CopyModelToDisplayModel()
+    {
+        ColourDisplayModel.Name = ColourModel.Name;
+    }
+
+    protected void CopyDisplayModelToModel()
+    {
+        ColourModel.Name = ColourDisplayModel.Name;
+    }
 }
