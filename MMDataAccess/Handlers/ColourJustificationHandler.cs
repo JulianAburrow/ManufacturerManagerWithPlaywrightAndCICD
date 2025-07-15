@@ -1,11 +1,8 @@
 ﻿namespace MMDataAccess.Handlers;
 
-public class ColourJustificationHandler : IColourJustificationHandler
+public class ColourJustificationHandler(ManufacturerManagerContext context) : IColourJustificationHandler
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ColourJustificationHandler(ManufacturerManagerContext context) =>
-        _context = context;
+    private readonly ManufacturerManagerContext _context = context;
 
     public async Task CreateColourJustificationAsync(ColourJustificationModel colourJustification, bool callSaveChanges)
     {

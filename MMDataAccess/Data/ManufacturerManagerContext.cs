@@ -17,6 +17,7 @@ public class ManufacturerManagerContext(DbContextOptions<ManufacturerManagerCont
         }
 
         builder.ApplyConfiguration(new ColourConfiguration());
+        builder.ApplyConfiguration(new ColourJustificationConfiguration());
         builder.ApplyConfiguration(new ManufacturerConfiguration());
         builder.ApplyConfiguration(new ManufacturerStatusConfiguration());
     }
