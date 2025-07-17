@@ -1,0 +1,31 @@
+﻿@page "/colourjustification/delete/{ColourJustificationId:int}"
+@inherits ColourJustificationBasePageClass
+
+<PageTitle>Delete Colour Justification</PageTitle>
+
+@if (ColourJustificationModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@ColourJustification" />
+    return;
+}
+
+@if (!OkToDelete)
+{
+    <CannotDeleteComponent ObjectType="@ColourJustification" ObjectName="@ColourJustificationModel.Justification" />
+    return;
+}
+
+<ConfirmDeleteComponent ObjectType="@ColourJustification" ObjectName="@ColourJustificationModel.Justification" />
+
+<br />
+<br />
+
+@if (OkToDelete)
+{
+    <button class="btn btn-danger" @onclick="DeleteColourJustification">Delete</button>
+    @:&nbsp;
+}
+<a href="/colourjustifications/index" class="btn btn-primary">Cancel</a>
+
+
+
