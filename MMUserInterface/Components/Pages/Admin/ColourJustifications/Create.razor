@@ -1,0 +1,23 @@
+﻿@page "/colourjustification/create"
+@inherits ColourJustificationBasePageClass
+
+<PageTitle>Create Colour Justification</PageTitle>
+
+<EditForm Model="@ColourJustificationDisplayModel" OnValidSubmit="CreateColourJustification">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudGrid>
+        <MudItem sm="7">
+            <MudCard>
+                <ColourJustificationCreateUpdateComponent ColourJustificationDisplayModel="@ColourJustificationDisplayModel" />
+                 <MudCardActions>
+                     <button type="submit" class="btn btn-primary">Submit</button>
+                     &nbsp;
+                     <a class="btn btn-primary" href="/colourjustifications/index">Cancel</a>
+                 </MudCardActions>
+             </MudCard>
+         </MudItem>
+     </MudGrid>
+
+</EditForm>

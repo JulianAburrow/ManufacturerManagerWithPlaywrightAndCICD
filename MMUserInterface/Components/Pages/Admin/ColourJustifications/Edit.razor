@@ -1,0 +1,28 @@
+﻿@page "/colourjustification/edit/{ColourJustificationId:int}"
+@inherits ColourJustificationBasePageClass
+
+<PageTitle>Edit Colour Justification</PageTitle>
+
+@if (ColourJustificationDisplayModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@ColourJustification" />
+    return;
+}
+
+<EditForm Model="@ColourJustificationDisplayModel" OnValidSubmit="UpdateColourJustification">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudGrid>
+        <MudItem sm="7">
+            <MudCard>
+                <ColourJustificationCreateUpdateComponent ColourJustificationDisplayModel="@ColourJustificationDisplayModel" />
+                 <MudCardActions>
+                     <button type="submit" class="btn btn-primary">Update</button>
+                     &nbsp;
+                     <a class="btn btn-primary" href="/colourjustifications/index">Cancel</a>
+                 </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
