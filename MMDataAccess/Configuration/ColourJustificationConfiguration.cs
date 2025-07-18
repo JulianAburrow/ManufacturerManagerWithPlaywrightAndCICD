@@ -6,5 +6,10 @@ public class ColourJustificationConfiguration : IEntityTypeConfiguration<ColourJ
     {
         builder.ToTable("ColourJustification");
         builder.HasKey(nameof(ColourJustificationModel.ColourJustificationId));
+        builder.HasMany(e => e.Widgets)
+            .WithOne(e => e.ColourJustification)
+            .HasForeignKey(e => e.ColourJustificationId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

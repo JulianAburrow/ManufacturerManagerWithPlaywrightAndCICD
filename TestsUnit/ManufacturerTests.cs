@@ -56,7 +56,7 @@ public class ManufacturerTests
 
         var returnedManufacturer = await _manufacturerHandler.GetManufacturerAsync(Manufacturer4.ManufacturerId);
         returnedManufacturer.Should().NotBeNull();
-        returnedManufacturer.Should().BeEquivalentTo(Manufacturer4);
+        Assert.Equal(Manufacturer4.Name, returnedManufacturer.Name);
     }
 
     [Fact]

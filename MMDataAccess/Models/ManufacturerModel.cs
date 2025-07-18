@@ -9,4 +9,6 @@ public class ManufacturerModel
     public int StatusId { get; set; }
 
     public ManufacturerStatusModel Status { get; set; } = null!;
+
+    public ICollection<WidgetModel> Widgets { get; set; } = null!;
 }

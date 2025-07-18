@@ -23,6 +23,10 @@ public class ManufacturerHandler(ManufacturerManagerContext context) : IManufact
 
     public async Task<ManufacturerModel> GetManufacturerAsync(int manufacturerId) =>
         await _context.Manufacturers
+            .Include(m => m.Widgets)
+                .ThenInclude(w => w.Colour)
+            .Include(m => m.Widgets)
+                .ThenInclude(w => w.Status)
             .Include(m => m.Status)
             .AsNoTracking()
             .SingleOrDefaultAsync(m => m.ManufacturerId == manufacturerId)
@@ -30,6 +34,7 @@ public class ManufacturerHandler(ManufacturerManagerContext context) : IManufact
 
     public async Task<List<ManufacturerModel>> GetManufacturersAsync() =>
         await _context.Manufacturers
+        .Include(m => m.Widgets)
         .Include(m => m.Status)
         .OrderBy(m => m.Name)
         .AsNoTracking()

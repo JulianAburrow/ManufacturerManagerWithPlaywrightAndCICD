@@ -1,16 +1,11 @@
 ﻿namespace MMDataAccess.Handlers;
 
-public class ManufacturerStatusHandler : IManufacturerStatusHandler
+public class ManufacturerStatusHandler(ManufacturerManagerContext context) : IManufacturerStatusHandler
 {
-    private readonly ManufacturerManagerContext _context;
+    private readonly ManufacturerManagerContext _context = context;
 
-    public ManufacturerStatusHandler(ManufacturerManagerContext context) =>
-        _context = context;
-
-    public async Task<List<ManufacturerStatusModel>> GetManufacturerStatusesAsync()
-    {
-        return await _context.ManufacturerStatuses
+    public async Task<List<ManufacturerStatusModel>> GetManufacturerStatusesAsync() =>
+        await _context.ManufacturerStatuses
             .AsNoTracking()
             .ToListAsync();
-    }
 }
