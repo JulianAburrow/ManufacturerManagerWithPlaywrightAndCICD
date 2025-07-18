@@ -6,5 +6,10 @@ public class ColourConfiguration : IEntityTypeConfiguration<ColourModel>
     {
         builder.ToTable("Colour");
         builder.HasKey(nameof(ColourModel.ColourId));
+        builder.HasMany(e => e.Widgets)
+            .WithOne(e => e.Colour)
+            .HasForeignKey(e => e.ColourId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

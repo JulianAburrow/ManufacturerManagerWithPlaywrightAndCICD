@@ -13,5 +13,10 @@ public class ManufacturerConfiguration : IEntityTypeConfiguration<ManufacturerMo
             .HasForeignKey(e => e.StatusId)
             .IsRequired()
             .OnDelete(DeleteBehavior.NoAction);
+        builder.HasMany(e => e.Widgets)
+            .WithOne(e => e.Manufacturer)
+            .HasForeignKey(e => e.ManufacturerId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

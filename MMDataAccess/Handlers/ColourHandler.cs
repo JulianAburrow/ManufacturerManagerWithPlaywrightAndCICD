@@ -23,12 +23,14 @@ public class ColourHandler(ManufacturerManagerContext context) : IColourHandler
 
     public async Task<ColourModel> GetColourAsync(int colourId) =>
         await _context.Colours
+            .Include(c => c.Widgets)
             .AsNoTracking()
             .SingleOrDefaultAsync(c => c.ColourId == colourId)
             ?? throw new ArgumentNullException(nameof(colourId), "Colour not found");
 
     public async Task<List<ColourModel>> GetColoursAsync() =>
         await _context.Colours
+            .Include(c => c.Widgets)
             .OrderBy(c => c.Name)
             .AsNoTracking()
             .ToListAsync();
