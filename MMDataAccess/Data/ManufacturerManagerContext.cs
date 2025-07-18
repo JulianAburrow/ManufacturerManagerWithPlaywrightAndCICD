@@ -6,6 +6,7 @@ public class ManufacturerManagerContext(DbContextOptions<ManufacturerManagerCont
     public DbSet<ColourModel> Colours { get; set; }
     public DbSet<ManufacturerModel> Manufacturers { get; set; }
     public DbSet<ManufacturerStatusModel> ManufacturerStatuses { get; set; }
+    public DbSet<WidgetStatusModel> WidgetStatuses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,5 +21,6 @@ public class ManufacturerManagerContext(DbContextOptions<ManufacturerManagerCont
         builder.ApplyConfiguration(new ColourJustificationConfiguration());
         builder.ApplyConfiguration(new ManufacturerConfiguration());
         builder.ApplyConfiguration(new ManufacturerStatusConfiguration());
+        builder.ApplyConfiguration(new WidgetStatusConfiguration());
     }
 }
