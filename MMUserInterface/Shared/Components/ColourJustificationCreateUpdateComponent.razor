@@ -1,3 +1,8 @@
 ﻿<MudCardContent>
     <MudTextField id="txtJustification" Label="Justification" @bind-Value="@ColourJustificationDisplayModel.Justification" AutoFocus OnlyValidateIfDirty="true" />
- </MudCardContent>
+</MudCardContent>
+<MudCardActions>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    &nbsp;
+    <a class="btn btn-primary" href="/colourjustifications/index">Cancel</a>
+</MudCardActions>

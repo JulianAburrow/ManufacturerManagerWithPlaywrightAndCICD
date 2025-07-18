@@ -118,6 +118,33 @@ public class ColourPageTests
     }
 
     [Fact]
+    public async Task DeleteButtonOnIndexPageNavigatesToDeleteColourPage()
+    {
+        var colourId = AddColour();
+        try
+        {
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/colours/index", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Colours'");
+
+            var deleteButton = page.GetByRole(AriaRole.Button, new() { Name = "Delete" });
+            if (await deleteButton.CountAsync() == 0)
+            {
+                deleteButton = page.GetByText("Delete", new() { Exact = false });
+                Assert.True(await deleteButton.CountAsync() > 0, "Delete button not found on Colours index page.");
+            }
+            await deleteButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Delete Colour'");
+        }
+        finally
+        {
+            RemoveColour(colourId);
+        }
+    }
+
+    [Fact]
     public async Task CanCreateColour()
     {
         var colour = new ColourModel();
@@ -324,33 +351,6 @@ public class ColourPageTests
             await cancelButton.First.ClickAsync();
 
             await page.WaitForFunctionAsync("document.title === 'Colours'");
-        }
-        finally
-        {
-            RemoveColour(colourId);
-        }
-    }
-
-    [Fact]
-    public async Task DeleteButtonOnIndexPageNavigatesToDeleteColourPage()
-    {
-        var colourId = AddColour();
-        try
-        {
-            var page = await PlaywrightTestHelper.CreatePageAsync();
-
-            await page.GotoAsync($"{GlobalValues.BaseUrl}/colours/index", GlobalValues.GetPageOptions());
-            await page.WaitForFunctionAsync("document.title === 'Colours'");
-
-            var deleteButton = page.GetByRole(AriaRole.Button, new() { Name = "Delete" });
-            if (await deleteButton.CountAsync() == 0)
-            {
-                deleteButton = page.GetByText("Delete", new() { Exact = false });
-                Assert.True(await deleteButton.CountAsync() > 0, "Delete button not found on Colours index page.");
-            }
-            await deleteButton.First.ClickAsync();
-
-            await page.WaitForFunctionAsync("document.title === 'Delete Colour'");
         }
         finally
         {
