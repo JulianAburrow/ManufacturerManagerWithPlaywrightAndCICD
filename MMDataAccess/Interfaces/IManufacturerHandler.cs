@@ -12,5 +12,7 @@ public interface IManufacturerHandler
 
     Task DeleteManufacturerAsync(int manufacturerId, bool callSaveChanges);
 
+    Task<int> GetManufacturerStatusByManufacturerId(int manufacturerId);
+
     Task SaveChangesAsync();
 }

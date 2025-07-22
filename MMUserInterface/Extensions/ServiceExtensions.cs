@@ -14,5 +14,7 @@ public static class ServiceExtensions
         services.AddTransient<IColourJustificationHandler, ColourJustificationHandler>();
         services.AddTransient<IManufacturerHandler, ManufacturerHandler>();
         services.AddTransient<IManufacturerStatusHandler, ManufacturerStatusHandler>();
+        services.AddTransient<IWidgetHandler, WidgetHandler>();
+        services.AddTransient<IWidgetStatusHandler, WidgetStatusHandler>();
     }
 }

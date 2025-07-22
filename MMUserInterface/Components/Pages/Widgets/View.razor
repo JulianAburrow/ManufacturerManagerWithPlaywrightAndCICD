@@ -1,0 +1,34 @@
+﻿@page "/widget/view/{WidgetId:int}"
+@inherits WidgetBasePageClass
+
+<PageTitle>View Widget</PageTitle>
+
+@if (WidgetModel == null ||
+    WidgetModel.Manufacturer == null ||
+    WidgetModel.Status == null)
+{
+    <LoadingMessageComponent ValueToShow="@Widget" />
+    return;
+}
+
+<MudGrid>
+    <MudItem sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudField Label="Name">@WidgetModel.Name</MudField>
+                <MudField Label="Manufacturer">@WidgetModel.Manufacturer.Name</MudField>
+                <MudField Label="Colour">@(WidgetModel.Colour != null ? WidgetModel.Colour.Name : "Not specified")</MudField>
+                <MudField Label="Colour Justification">@(WidgetModel.ColourJustification != null ? WidgetModel.ColourJustification.Justification : "Not specified")</MudField>
+                <MudField Label="Status">@WidgetModel.Status.StatusName</MudField>
+                <MudField Label="Cost Price">£@WidgetModel.CostPrice</MudField>
+                <MudField Label="Retail Price">£@WidgetModel.RetailPrice</MudField>
+                <MudField Label="Stock Level">@WidgetModel.StockLevel</MudField>
+                </MudCardContent>
+                <MudCardActions>
+                    <a href="/widget/edit/@WidgetModel.WidgetId" class="btn btn-primary">Edit</a>
+                    &nbsp;
+                    <a href="/widgets/index" class="btn btn-primary">Back to list</a>
+                </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>

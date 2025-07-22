@@ -41,8 +41,11 @@ Height="500px">
             <a class="btn btn-primary" href="/colour/view/@context.ColourId">View</a>
             &nbsp;
             <a class="btn btn-primary" href="/colour/edit/@context.ColourId">Edit</a>
-            &nbsp;
-            <a class="btn btn-danger" href="/colour/delete/@context.ColourId">Delete</a>
+            @if (context.Widgets.Count == 0)
+            {
+                @:&nbsp;
+                <a class="btn btn-danger" href="/colour/delete/@context.ColourId">Delete</a>
+            }
         </MudTd>
     </RowTemplate>
     <PagerContent>

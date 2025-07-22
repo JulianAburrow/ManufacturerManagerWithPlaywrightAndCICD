@@ -1,0 +1,66 @@
+﻿<MudTable Items="Widgets"
+          Hover
+          FixedHeader="true">
+    <HeaderContent>
+        <MudTh title="Sort by Widget Name">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.Name)">
+                Name
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Manufacturer">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.Manufacturer.Name)">
+                Manufacturer
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Colour">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.Colour?.Name!)">
+                Colour
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Cost Price">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.CostPrice)">
+                Cost Price
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Stock Level">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.StockLevel)">
+                Stock Level
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh>
+            Net Stock Value
+        </MudTh>
+        <MudTh title="Sort by Status">
+            <MudTableSortLabel SortBy="new Func<WidgetModel, object>(x => x.Status.StatusName)">
+                Status
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Manufacturer.Name</MudTd>
+        <MudTd>@(context.Colour != null ? context.Colour.Name : "None")</MudTd>
+        <MudTd>£@context.CostPrice</MudTd>
+        <MudTd>@context.StockLevel</MudTd>
+        <MudTd>£@(context.StockLevel * context.CostPrice)</MudTd>
+        <MudTd>@context.Status.StatusName</MudTd>
+        <MudTd>
+            <a href="/widget/view/@context.WidgetId" class="btn btn-primary">View</a>
+            &nbsp;
+            <a href="/widget/edit/@context.WidgetId" class="btn btn-primary">Edit</a>
+        </MudTd>
+    </RowTemplate>
+    <FooterContent>
+        <MudTd></MudTd>
+        <MudTd></MudTd>
+        <MudTd></MudTd>
+        <MudTd></MudTd>
+        <MudTd>Total Stock Value</MudTd>
+        <MudTd>£@TotalStockValue</MudTd>
+        <MudTd></MudTd>
+    </FooterContent>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 5, 10, 15, int.MaxValue }" />
+    </PagerContent>
+</MudTable>

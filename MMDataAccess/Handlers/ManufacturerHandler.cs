@@ -40,6 +40,12 @@ public class ManufacturerHandler(ManufacturerManagerContext context) : IManufact
         .AsNoTracking()
         .ToListAsync();
 
+    public async Task<int> GetManufacturerStatusByManufacturerId(int manufacturerId) =>
+        await _context.Manufacturers
+            .Where(m => m.ManufacturerId == manufacturerId)
+            .Select(s => s.StatusId)
+            .SingleOrDefaultAsync();
+
     public async Task SaveChangesAsync()
     {
         await _context.SaveChangesAsync();
@@ -52,6 +58,16 @@ public class ManufacturerHandler(ManufacturerManagerContext context) : IManufact
             return;
         manufacturerToUpdate.Name = manufacturer.Name;
         manufacturerToUpdate.StatusId = manufacturer.StatusId;
+
+        if (manufacturer.StatusId == (int)PublicEnums.ManufacturerStatusEnum.Inactive)
+        {
+            var widgets = _context.Widgets
+                .Where(w => w.ManufacturerId == manufacturer.ManufacturerId);
+            foreach (var widget in widgets)
+            {
+                widget.StatusId = (int)PublicEnums.WidgetStatusEnum.Inactive;
+            }
+        }
 
         if (callSaveChanges)
             await SaveChangesAsync();
