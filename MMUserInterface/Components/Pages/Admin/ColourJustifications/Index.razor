@@ -41,8 +41,11 @@ Items="ColourJustifications"
             <a class="btn btn-primary" href="/colourjustification/view/@context.ColourJustificationId">View</a>
             &nbsp;
             <a class="btn btn-primary" href="/colourjustification/edit/@context.ColourJustificationId">Edit</a>
-            &nbsp;
-            <a class="btn btn-danger" href="/colourjustification/delete/@context.ColourJustificationId">Delete</a>                
+            @if (context.Widgets.Count == 0)
+            {
+                @:&nbsp;
+                <a class="btn btn-danger" href="/colourjustification/delete/@context.ColourJustificationId">Delete</a>
+            }
         </MudTd>
      </RowTemplate>
      <PagerContent>

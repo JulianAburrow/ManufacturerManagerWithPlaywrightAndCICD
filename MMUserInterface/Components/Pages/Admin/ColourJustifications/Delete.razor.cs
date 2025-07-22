@@ -6,7 +6,7 @@ public partial class Delete
     {
         ColourJustificationModel = await ColourJustificationHandler.GetColourJustificationAsync(ColourJustificationId);
         MainLayout.SetHeaderValue("Delete Colour Justification");
-        OkToDelete = true;
+        OkToDelete = ColourJustificationModel.Widgets.Count == 0;
     }
 
     protected override void OnInitialized()

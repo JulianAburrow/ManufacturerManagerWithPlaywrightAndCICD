@@ -1,0 +1,17 @@
+﻿@page "/widgets/index"
+@inherits WidgetBasePageClass
+
+<PageTitle>Widgets</PageTitle>
+
+@if (Widgets == null)
+{
+    <LoadingMessageComponent ValueToShow="@WidgetPlural" />
+    return;
+}
+
+<a href="/widget/create" class="btn btn-primary">Create Widget</a>
+
+<br />
+<br />
+
+<WidgetGridViewComponent Widgets="@Widgets" />

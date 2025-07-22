@@ -1,0 +1,76 @@
+﻿@page "/widget/edit/{WidgetId:int}"
+@inherits WidgetBasePageClass
+
+<PageTitle>Edit Widget</PageTitle>
+
+@if (WidgetModel == null ||
+    Manufacturers == null ||
+    Colours == null ||
+    ColourJustifications == null ||
+    WidgetStatuses == null)
+{
+    <LoadingMessageComponent ValueToShow="@Widget" />
+    return;
+}
+
+<EditForm Model="@WidgetDisplayModel" OnValidSubmit="UpdateWidget">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudGrid>
+        <MudItem sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField id="txtWidgetName" Label="Name" @bind-Value="WidgetDisplayModel.Name" />
+                    <MudSelect T="int"
+                               id="ddlManufacturerName"
+                               Label="Manufacturer"
+                               @bind-Value="WidgetDisplayModel.ManufacturerId"
+                               @bind-Value:after="SetWidgetStatusId"
+                               HelperText="@(ManufacturerIsInactive ? "Widget status has been set to inactive as it is not possible for an active widget to have an inactive manufacturer" : string.Empty)">
+                        @foreach (var manufacturer in Manufacturers)
+                        {
+                            <MudSelectItem T="int" Value="@manufacturer.ManufacturerId">
+                                @manufacturer.Name
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect id="ddlColour" Label="Colour" @bind-Value="WidgetDisplayModel.ColourId">
+                        @foreach (var colour in Colours)
+                        {
+                            <MudSelectItem T="int?" Value="colour.ColourId">
+                                @colour.Name
+                            </MudSelectItem>
+                        }                        
+                    </MudSelect>
+                    <MudSelect id="ddlColourJustification" Label="Colour Justification" @bind-Value="WidgetDisplayModel.ColourJustificationId">
+                        @foreach (var colourJustification in ColourJustifications)
+                        {
+                            <MudSelectItem T="int?" Value="colourJustification.ColourJustificationId">
+                                @colourJustification.Justification
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudSelect id="ddlStatus" Label="Status" @bind-Value="WidgetDisplayModel.StatusId"
+                        Disabled="ManufacturerIsInactive"
+                        HelperText="@(ManufacturerIsInactive ? "Cannot activate Widget when Manufacturer is Inactive" : "")">
+                        @foreach (var widgetStatus in WidgetStatuses)
+                        {
+                            <MudSelectItem T="int" Value="widgetStatus.StatusId">
+                                @widgetStatus.StatusName
+                            </MudSelectItem>
+                        }
+                    </MudSelect>
+                    <MudTextField id="txtCostPrice" Label="Cost Price" @bind-Value="WidgetDisplayModel.CostPrice" />
+                    <MudTextField id="txtRetailPrice" Label="Retail Price" @bind-Value="WidgetDisplayModel.RetailPrice" />
+                    <MudTextField id="txtStockLevel" Label="Stock Level" @bind-Value="WidgetDisplayModel.StockLevel" />
+                </MudCardContent>
+                <MudCardActions>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    &nbsp;
+                    <a class="btn btn-primary" href="/widgets/index">Cancel</a>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
