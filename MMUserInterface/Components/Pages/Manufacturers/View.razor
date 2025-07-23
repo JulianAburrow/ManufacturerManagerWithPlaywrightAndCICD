@@ -24,3 +24,16 @@
         </MudCard>
     </MudItem>
 </MudGrid>
+
+<br />
+<br />
+
+@if (!ManufacturerModel.Widgets.Any())
+{
+    <h4>@ManufacturerModel.Name has no widgets.</h4>
+    return;
+}
+
+<h4>Widgets for @ManufacturerModel.Name</h4>
+
+<WidgetGridViewComponent Widgets="@ManufacturerModel.Widgets" />
