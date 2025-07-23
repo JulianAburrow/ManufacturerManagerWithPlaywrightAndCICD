@@ -7,10 +7,7 @@ public class WidgetStatusTests
 
     public WidgetStatusTests()
     {
-        var options = new DbContextOptionsBuilder<ManufacturerManagerContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _manufacturerManagerContext = new ManufacturerManagerContext(options);
+        _manufacturerManagerContext = TestsUnitHelper.GetContextWithOptions();
         _widgetStatusHandler = new WidgetStatusHandler(_manufacturerManagerContext);
     }
 

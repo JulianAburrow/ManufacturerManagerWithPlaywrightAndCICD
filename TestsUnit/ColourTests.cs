@@ -7,10 +7,7 @@ public class ColourTests
 
     public ColourTests()
     {
-        var options = new DbContextOptionsBuilder<ManufacturerManagerContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _manufacturerManagerContext = new ManufacturerManagerContext(options);
+        _manufacturerManagerContext = TestsUnitHelper.GetContextWithOptions();
         _colourHandler = new ColourHandler(_manufacturerManagerContext);
     }
 

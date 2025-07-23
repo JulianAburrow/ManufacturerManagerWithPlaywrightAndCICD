@@ -7,10 +7,7 @@ public class ColourJustificationTests
 
     public ColourJustificationTests()
     {
-        var options = new DbContextOptionsBuilder<ManufacturerManagerContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _manufacturerManagerContext = new ManufacturerManagerContext(options);
+        _manufacturerManagerContext = TestsUnitHelper.GetContextWithOptions();
         _colourJustificationHandler = new ColourJustificationHandler(_manufacturerManagerContext);
     }
 
