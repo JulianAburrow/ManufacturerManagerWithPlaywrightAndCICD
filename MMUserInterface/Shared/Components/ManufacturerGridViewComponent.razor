@@ -12,11 +12,17 @@
                 Status
             </MudTableSortLabel>
         </MudTh>
+        <MudTh title="Sort by Active Widget Count">
+            <MudTableSortLabel SortBy="new Func<ManufacturerModel, object>(x => x.Widgets.Count)">
+                Widget Count
+            </MudTableSortLabel>
+        </MudTh>
         <MudTh></MudTh>
     </HeaderContent>
     <RowTemplate>
         <MudTd>@context.Name</MudTd>
         <MudTd>@context.Status.StatusName</MudTd>
+        <MudTd>@context.Widgets.Count (@context.Widgets.Where(w => w.StatusId == (int)ManufacturerStatusEnum.Inactive).Count() inactive)</MudTd>
         <MudTd>
             <a href="/manufacturer/view/@context.ManufacturerId" class="btn btn-primary">View</a>
             &nbsp;
