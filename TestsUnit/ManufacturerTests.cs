@@ -7,10 +7,7 @@ public class ManufacturerTests
 
     public ManufacturerTests()
     {
-        var options = new DbContextOptionsBuilder<ManufacturerManagerContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-            .Options;
-        _manufacturerManagerContext = new ManufacturerManagerContext(options);
+        _manufacturerManagerContext = TestsUnitHelper.GetContextWithOptions();
         _manufacturerHandler = new ManufacturerHandler(_manufacturerManagerContext);
     }
 
@@ -101,5 +98,28 @@ public class ManufacturerTests
 
         Func<Task> act = async () => await _manufacturerHandler.GetManufacturerAsync(manufacturerId);
         await act.Should().ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
+    public async Task SetManufacturerInactiveSetsWidgetsForManufacturerInactive()
+    {
+        _manufacturerManagerContext.Manufacturers.Add(Manufacturer1);
+        _manufacturerManagerContext.SaveChanges();
+        var widget1 = new WidgetModel
+        {
+            Name = "Widget1",
+            ManufacturerId = Manufacturer1.ManufacturerId,
+            ColourId = 1,
+            StatusId = (int)PublicEnums.WidgetStatusEnum.Active
+        };
+        _manufacturerManagerContext.Widgets.Add(widget1);
+        _manufacturerManagerContext.SaveChanges();
+        Manufacturer1.StatusId = (int)PublicEnums.ManufacturerStatusEnum.Inactive;
+        await _manufacturerHandler.UpdateManufacturerAsync(Manufacturer1, true);
+        var updatedWidgets = _manufacturerManagerContext.Widgets.Where(w => w.WidgetId == widget1.WidgetId);
+        foreach (var updatedWidget in updatedWidgets)
+        {
+            updatedWidget.StatusId.Should().Be((int)PublicEnums.WidgetStatusEnum.Inactive);
+        }
     }
 }
