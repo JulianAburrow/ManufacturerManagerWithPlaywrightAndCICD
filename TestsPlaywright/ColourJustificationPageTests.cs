@@ -173,6 +173,7 @@ public class ColourJustificationPageTests
 
             colourJustification = await _context.ColourJustifications.FirstOrDefaultAsync(c => c.Justification == colourJustificationJustification);
             Assert.NotNull(colourJustification);
+            Assert.Equal(colourJustificationJustification, colourJustification.Justification);
         }
         finally
         {

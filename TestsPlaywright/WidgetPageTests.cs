@@ -117,7 +117,6 @@ public class WidgetPageTests
 
         try
         {
-
             // database will have been seeded with colours and colour justifications.
             var colourName = "Red";
             var colourJustificationName = "Customer request";
@@ -180,6 +179,146 @@ public class WidgetPageTests
         }
     }
 
+    [Fact]
+    public async Task CanEditWidget()
+    {
+        var manufacturerId = AddManufacturer();
+        var newManufacturerId = AddManufacturer();
+        var widgetId = AddWidget(manufacturerId);
+
+        try
+        {
+            // database will have been seeded with colours and colour justifications.
+            var colourName = "Red";
+            var colourJustificationName = "Customer request";
+            var statusName = "Inactive";
+            var costPrice = 10m;
+            var retailPrice = 20m;
+            var stockLevel = 5;
+            var newManufacturer = _context.Manufacturers.First(m => m.ManufacturerId == newManufacturerId);
+
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/edit/{widgetId}", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Edit Widget'");
+
+            var updatedWidgetName = $"Updated Widget {Guid.NewGuid()}";
+            await page.GetByLabel("Name").FillAsync(updatedWidgetName);
+            await SelectDropdownOption(page, "manufacturer-select", newManufacturer.Name);
+            await SelectDropdownOption(page, "colour-select", colourName);
+            await SelectDropdownOption(page, "colour-justification-select", colourJustificationName);
+            await SelectDropdownOption(page, "status-select", statusName);
+            await page.GetByLabel("Cost Price").FillAsync(costPrice.ToString());
+            await page.GetByLabel("Retail Price").FillAsync(retailPrice.ToString());
+            await page.GetByLabel("Stock Level").FillAsync(stockLevel.ToString());
+
+            var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
+            if (await submitButton.CountAsync() == 0)
+            {
+                submitButton = page.GetByText("Submit", new() { Exact = false });
+                Assert.True(await submitButton.CountAsync() > 0, "Submit button not found on Edit Widget page.");
+            }
+            await submitButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+
+            var updatedWidget = await WaitForWidgetUpdate(widgetId, updatedWidgetName, 5000);
+            Assert.NotNull(updatedWidget);
+            Assert.Equal(updatedWidgetName, updatedWidget.Name);
+            Assert.Equal(newManufacturer.Name, updatedWidget.Manufacturer.Name);
+            Assert.Equal(colourName, updatedWidget.Colour.Name);
+            Assert.Equal(colourJustificationName, updatedWidget.ColourJustification.Justification);
+            Assert.Equal((int)PublicEnums.WidgetStatusEnum.Inactive, updatedWidget.StatusId);
+            Assert.Equal(costPrice, updatedWidget.CostPrice);
+            Assert.Equal(retailPrice, updatedWidget.RetailPrice);
+            Assert.Equal(stockLevel, updatedWidget.StockLevel);
+        }
+        finally
+        {
+            RemoveWidget(widgetId);
+            _context.ChangeTracker.Clear();
+            RemoveManufacturer(manufacturerId);
+            RemoveManufacturer(newManufacturerId);
+        }
+    }
+
+    [Fact]
+    public async Task CancelButtonOnCreatePageNavigatesToIndex()
+    {
+        var page = await PlaywrightTestHelper.CreatePageAsync();
+
+        await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/create", GlobalValues.GetPageOptions());
+        await page.WaitForFunctionAsync("document.title === 'Create Widget'");
+
+        var cancelButton = page.GetByRole(AriaRole.Link, new() { Name = "Cancel" });
+        if (await cancelButton.CountAsync() == 0)
+        {
+            cancelButton = page.GetByText("Cancel", new() { Exact = false });
+            Assert.True(await cancelButton.CountAsync() > 0, "Cancel button not found on Create page.");
+        }
+        await cancelButton.First.ClickAsync();
+        await page.WaitForFunctionAsync("document.title === 'Widgets'");
+    }
+
+    [Fact]
+    public async Task CancelButtonOnEditPageNavigatesToIndex()
+    {
+        var manufacturerId = AddManufacturer();
+        var widgetId = AddWidget(manufacturerId);
+        try
+        {
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/edit/{widgetId}", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Edit Widget'");
+
+            var cancelButton = page.GetByRole(AriaRole.Link, new() { Name = "Cancel" });
+            if (await cancelButton.CountAsync() == 0)
+            {
+                cancelButton = page.GetByText("Cancel", new() { Exact = false });
+                Assert.True(await cancelButton.CountAsync() > 0, "Cancel button not found on Edit page.");
+            }
+            await cancelButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+        }
+        finally
+        {
+            RemoveWidget(widgetId);
+            _context.ChangeTracker.Clear();
+            RemoveManufacturer(manufacturerId);
+        }
+    }
+
+    [Fact]
+    public async Task CancelButtonOnViewPageNavigatesToIndex()
+    {
+        var manufacturerId = AddManufacturer();
+        var widgetId = AddWidget(manufacturerId);
+        try
+        {
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/view/{widgetId}", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'View Widget'");
+
+            var backToListButton = page.GetByRole(AriaRole.Link, new() { Name = "Back to list" });
+            if (await backToListButton.CountAsync() == 0)
+            {
+                backToListButton = page.GetByText("Cancel", new() { Exact = false });
+                Assert.True(await backToListButton.CountAsync() > 0, "Back to list button not found on View page.");
+            }
+            await backToListButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+        }
+        finally
+        {
+            RemoveWidget(widgetId);
+            _context.ChangeTracker.Clear();
+            RemoveManufacturer(manufacturerId);
+        }
+    }
+
     private int AddWidget(int manufacturerId)
     {
         var newWidget = new WidgetModel
@@ -231,6 +370,10 @@ public class WidgetPageTests
         while (sw.ElapsedMilliseconds < timeoutMs)
         {
             var widget = await _context.Widgets
+                .Include(w => w.Manufacturer)
+                .Include(w => w.Colour)
+                .Include(w => w.ColourJustification)
+                .Include(w => w.Status)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(w => w.WidgetId == widgetId);
             if (widget != null && widget.Name == expectedName)

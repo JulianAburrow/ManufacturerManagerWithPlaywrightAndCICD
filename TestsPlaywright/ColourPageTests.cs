@@ -173,6 +173,7 @@ public class ColourPageTests
             
             colour = await _context.Colours.FirstOrDefaultAsync(c => c.Name == colourName);
             Assert.NotNull(colour);
+            Assert.Equal(colourName, colour.Name);
         }
         finally
         {

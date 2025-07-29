@@ -135,6 +135,8 @@ public class ManufacturerPageTests
 
             manufacturer = await _context.Manufacturers.FirstOrDefaultAsync(m => m.Name == manufacturerName);
             Assert.NotNull(manufacturer);
+            Assert.Equal(manufacturerName, manufacturer.Name);
+            Assert.Equal((int)Enums.StatusEnum.Active, manufacturer.StatusId);
         }
         finally
         {
