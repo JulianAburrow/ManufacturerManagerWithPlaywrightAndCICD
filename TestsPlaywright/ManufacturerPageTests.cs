@@ -1,6 +1,4 @@
-﻿using MMDataAccess.Enums;
-
-namespace TestsPlaywright;
+﻿namespace TestsPlaywright;
 
 public class ManufacturerPageTests
 {

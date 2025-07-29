@@ -1,0 +1,248 @@
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MMDataAccess.Enums;
+
+namespace TestsPlaywright;
+public class WidgetPageTests
+{
+    private readonly ManufacturerManagerContext _context;
+
+    public WidgetPageTests()
+    {
+        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
+        _context.Database.EnsureCreated();
+    }
+
+    [Fact]
+    public async Task WidgetHomePageLoads()
+    {
+        var page = await PlaywrightTestHelper.CreatePageAsync();
+
+        await page.GotoAsync($"{GlobalValues.BaseUrl}/", GlobalValues.GetPageOptions());
+        var homeTitle = await page.TitleAsync();
+        Assert.Equal("Manufacturer Manager", homeTitle);
+
+        var widgetsLink = page.GetByRole(AriaRole.Link, new() { Name = "Widgets" });
+        if (await widgetsLink.CountAsync() == 0)
+        {
+            widgetsLink = page.GetByText("Widgets", new() { Exact = false });
+            Assert.True(await widgetsLink.CountAsync() > 0, "Widgets link not found in navmenu");
+        }
+        await widgetsLink.First.ClickAsync();
+
+        await page.WaitForFunctionAsync("document.title === 'Widgets'");
+    }
+
+    [Fact]
+    public async Task CreateButtonOnIndexPageNavigatesToCreatePage()
+    {
+        var page = await PlaywrightTestHelper.CreatePageAsync();
+
+        await page.GotoAsync($"{GlobalValues.BaseUrl}/widgets/index", GlobalValues.GetPageOptions());
+        var widgetsTitle = await page.TitleAsync();
+        Assert.Equal("Widgets", widgetsTitle);
+
+        var createButton = page.GetByRole(AriaRole.Button, new() { Name = "Create Widget" });
+        if (await createButton.CountAsync() == 0)
+        {
+            createButton = page.GetByText("Create Widget", new() { Exact = false });
+            Assert.True(await createButton.CountAsync() > 0, "Create Widget button not found on Widgets page");
+        }
+        await createButton.First.ClickAsync();
+
+        await page.WaitForFunctionAsync("document.title === 'Create Widget'");
+    }
+
+    [Fact]
+    public async Task ViewButtonOnIndexPageNavigatesToViewWidgetPage()
+    {
+        var manufacturerId = AddManufacturer();
+        var widgetId = AddWidget(manufacturerId);
+        try
+        {
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widgets/index", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+
+            var viewButton = page.GetByRole(AriaRole.Link, new() { Name = "View" });
+            if (await viewButton.CountAsync() == 0)
+            {
+                viewButton = page.GetByText("View", new() { Exact = false });
+                Assert.True(await viewButton.CountAsync() > 0, "View button not found on Widgets index page.");
+            }
+            await viewButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'View Widget'");
+        }
+        finally
+        {
+            RemoveWidget(widgetId);
+            RemoveManufacturer(manufacturerId);
+        }
+    }
+
+    [Fact]
+    public async Task EditButtonOnIndexPageNavigatesToEditWidgetPage()
+    {
+        var manufacturerId = AddManufacturer();
+        var widgetId = AddWidget(manufacturerId);
+        try
+        {
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widgets/index", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+
+            var editButton = page.GetByRole(AriaRole.Link, new() { Name = "Edit" });
+            if (await editButton.CountAsync() == 0)
+            {
+                editButton = page.GetByText("Edit", new() { Exact = false });
+                Assert.True(await editButton.CountAsync() > 0, "Edit button not found on Widgets index page.");
+            }
+            await editButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Edit Widget'");
+        }
+        finally
+        {
+            RemoveWidget(widgetId);
+            RemoveManufacturer(manufacturerId);
+        }
+    }
+
+    [Fact]
+    public async Task CanCreateWidget()
+    {
+        var manufacturerId = AddManufacturer();
+        var widget = new WidgetModel();
+
+        try
+        {
+
+            // database will have been seeded with colours and colour justifications.
+            var colourName = "Red";
+            var colourJustificationName = "Customer request";
+            var statusName = "Active";
+            var costPrice = 10m;
+            var retailPrice = 20m;
+            var stockLevel = 5;
+            var initialCount = _context.Widgets.Count();
+            var manufacturer = _context.Manufacturers.First(m => m.ManufacturerId == manufacturerId);
+            // Status will be 'Active'
+
+            var page = await PlaywrightTestHelper.CreatePageAsync();
+            await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/create", GlobalValues.GetPageOptions());
+            await page.WaitForFunctionAsync("document.title === 'Create Widget'");
+            var widgetName = $"Test Widget {Guid.NewGuid()}";
+            await page.GetByLabel("Name").FillAsync(widgetName);
+            await SelectDropdownOption(page, "manufacturer-select", manufacturer.Name);
+            await SelectDropdownOption(page, "colour-select", colourName);
+            await SelectDropdownOption(page, "colour-justification-select", colourJustificationName);
+            await SelectDropdownOption(page, "status-select", statusName);
+            await page.GetByLabel("Cost Price").FillAsync(costPrice.ToString());
+            await page.GetByLabel("Retail Price").FillAsync(retailPrice.ToString());
+            await page.GetByLabel("Stock Level").FillAsync(stockLevel.ToString());
+
+            var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
+            if (await submitButton.CountAsync() == 0)
+            {
+                submitButton = page.GetByText("Submit", new() { Exact = false });
+                Assert.True(await submitButton.CountAsync() > 0, "Submit button not found on Create Widget page.");
+            }
+            await submitButton.First.ClickAsync();
+
+            await page.WaitForFunctionAsync("document.title === 'Widgets'");
+
+            Assert.Equal(initialCount + 1, _context.Widgets.Count());
+
+            widget = await _context.Widgets
+                .Include(w => w.Manufacturer)
+                .Include(w => w.Colour)
+                .Include(w => w.ColourJustification)
+                .FirstOrDefaultAsync(w => w.Name == widgetName);
+            Assert.NotNull(widget);
+            Assert.Equal(widgetName, widget.Name);
+            Assert.Equal(manufacturer.Name, widget.Manufacturer.Name);
+            Assert.Equal(colourName, widget.Colour.Name);
+            Assert.Equal(colourJustificationName, widget.ColourJustification.Justification);
+            Assert.Equal((int)PublicEnums.WidgetStatusEnum.Active, widget.StatusId);
+            Assert.Equal(costPrice, widget.CostPrice);
+            Assert.Equal(retailPrice, widget.RetailPrice);
+            Assert.Equal(stockLevel, widget.StockLevel);
+        }
+        finally
+        {
+            if (widget != null)
+            {
+                RemoveWidget(widget.WidgetId);
+            }
+            _context.ChangeTracker.Clear();
+            RemoveManufacturer(manufacturerId);
+        }
+    }
+
+    private int AddWidget(int manufacturerId)
+    {
+        var newWidget = new WidgetModel
+        {
+            Name = $"Test Widget {Guid.NewGuid()}",
+            ManufacturerId = manufacturerId,
+            StatusId = (int)PublicEnums.WidgetStatusEnum.Active,
+        };
+        _context.Widgets.Add(newWidget);
+        _context.SaveChanges();
+        return newWidget.WidgetId;
+    }
+
+    private int AddManufacturer()
+    {
+        var newManufacturer = new ManufacturerModel
+        {
+            Name = $"Test Manufacturer {Guid.NewGuid()}",
+            StatusId = (int)Enums.StatusEnum.Active,
+        };
+        _context.Manufacturers.Add(newManufacturer);
+        _context.SaveChanges();
+        return newManufacturer.ManufacturerId;
+    }
+
+    private void RemoveWidget(int widgetId)
+    {
+        var widget = _context.Widgets.Find(widgetId);
+        if (widget != null)
+        {
+            _context.Widgets.Remove(widget);
+            _context.SaveChanges();
+        }
+    }
+
+    private void RemoveManufacturer(int manufacturerId)
+    {
+        var manufacturer = _context.Manufacturers.Find(manufacturerId);
+        if (manufacturer != null)
+        {
+            _context.Manufacturers.Remove(manufacturer);
+            _context.SaveChanges();
+        }
+    }
+
+    private async Task<WidgetModel?> WaitForWidgetUpdate(int widgetId, string expectedName, int timeoutMs)
+    {
+        var sw = Stopwatch.StartNew();
+        while (sw.ElapsedMilliseconds < timeoutMs)
+        {
+            var widget = await _context.Widgets
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.WidgetId == widgetId);
+            if (widget != null && widget.Name == expectedName)
+                return widget;
+            await Task.Delay(100);
+        }
+        return await _context.Widgets.FindAsync(widgetId);
+    }
+
+    private static async Task SelectDropdownOption(IPage page, string dropdownTestId, string itemText)
+    {
+        await page.GetByTestId(dropdownTestId).Locator("..").ClickAsync();
+        await page.ClickAsync($"div.mud-popover div.mud-list-item:has-text('{itemText}')");
+    }
+}
