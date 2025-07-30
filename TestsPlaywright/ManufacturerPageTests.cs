@@ -133,6 +133,7 @@ public class ManufacturerPageTests
                 Assert.True(await submitButton.CountAsync() > 0, "Submit button not found on Create Manufacturer page.");
             }
             await submitButton.First.ClickAsync();
+            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
 
