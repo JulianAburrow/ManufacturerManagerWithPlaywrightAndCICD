@@ -195,7 +195,7 @@ public class ColourPageTests
             await page.GotoAsync($"{GlobalValues.BaseUrl}/colour/edit/{colourId}", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Edit Colour'");
 
-            var updatedColourName = "Colour 654321";
+            var updatedColourName = "Updated Colour 654321";
             await page.GetByLabel("Name").FillAsync(updatedColourName);
 
             var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
@@ -363,7 +363,7 @@ public class ColourPageTests
     {
         var newColour = new ColourModel
         {
-            Name = "Colour 123546",
+            Name = "Test Colour 123546",
         };
         _context.Colours.Add(newColour);
         _context.SaveChanges();

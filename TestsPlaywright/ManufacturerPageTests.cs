@@ -1,4 +1,6 @@
-﻿namespace TestsPlaywright;
+﻿using System.Transactions;
+
+namespace TestsPlaywright;
 
 public class ManufacturerPageTests
 {
@@ -54,6 +56,7 @@ public class ManufacturerPageTests
     public async Task ViewButtonOnIndexPageNavigatesToViewManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -81,6 +84,7 @@ public class ManufacturerPageTests
     public async Task EditButtonOnIndexPageNavigatesToEditManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -108,6 +112,7 @@ public class ManufacturerPageTests
     public async Task CanCreateManufacturer()
     {
         var manufacturer = new ManufacturerModel();
+
         try
         {
             var initialCount = _context.Manufacturers.Count();
@@ -117,7 +122,7 @@ public class ManufacturerPageTests
             await page.WaitForFunctionAsync("document.title === 'Create Manufacturer'");
 
             var manufacturerName = $"Test Manufacturer {Guid.NewGuid()}";
-            await page.GetByLabel("Name").FillAsync(manufacturerName);
+            await page.GetByLabel("Name").FillAsync($"{manufacturerName}");
             await page.ClickAsync("div[class*='mud-select'] div[class*='mud-input-control-input-container']");
             await page.ClickAsync("div.mud-popover div.mud-list-item:has-text('Active')");
 
@@ -144,8 +149,7 @@ public class ManufacturerPageTests
             {
                 RemoveManufacturer(manufacturer.ManufacturerId);
             }                
-        }
-        
+        }        
     }
 
     [Fact]
@@ -208,6 +212,7 @@ public class ManufacturerPageTests
     public async Task CancelButtonOnEditPageNavigatesToIndex()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -235,6 +240,7 @@ public class ManufacturerPageTests
     public async Task CancelButtonOnViewPageNavigatesToIndex()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();

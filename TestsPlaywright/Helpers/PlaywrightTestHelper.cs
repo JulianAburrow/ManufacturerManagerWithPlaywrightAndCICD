@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TestsPlaywright.Helpers;
+﻿namespace TestsPlaywright.Helpers;
 
 public static class PlaywrightTestHelper
 {
