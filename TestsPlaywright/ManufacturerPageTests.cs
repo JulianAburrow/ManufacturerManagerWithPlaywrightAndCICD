@@ -1,17 +1,7 @@
-﻿using System.Transactions;
+﻿namespace TestsPlaywright;
 
-namespace TestsPlaywright;
-
-public class ManufacturerPageTests
+public class ManufacturerPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ManufacturerPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task ManufacturerHomePageLoads()
     {
@@ -133,7 +123,6 @@ public class ManufacturerPageTests
                 Assert.True(await submitButton.CountAsync() > 0, "Submit button not found on Create Manufacturer page.");
             }
             await submitButton.First.ClickAsync();
-            await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 
             await page.WaitForFunctionAsync("document.title === 'Manufacturers'");
 

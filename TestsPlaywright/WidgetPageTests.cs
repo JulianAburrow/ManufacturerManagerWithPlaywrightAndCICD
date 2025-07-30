@@ -1,17 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MMDataAccess.Enums;
+﻿namespace TestsPlaywright;
 
-namespace TestsPlaywright;
-public class WidgetPageTests
+public class WidgetPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public WidgetPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task WidgetHomePageLoads()
     {
@@ -120,13 +110,12 @@ public class WidgetPageTests
             // database will have been seeded with colours and colour justifications.
             var colourName = "Red";
             var colourJustificationName = "Customer request";
-            var statusName = "Active";
+            var statusName = PublicEnums.WidgetStatusEnum.Active.ToString();
             var costPrice = 10m;
             var retailPrice = 20m;
             var stockLevel = 5;
             var initialCount = _context.Widgets.Count();
             var manufacturer = _context.Manufacturers.First(m => m.ManufacturerId == manufacturerId);
-            // Status will be 'Active'
 
             var page = await PlaywrightTestHelper.CreatePageAsync();
             await page.GotoAsync($"{GlobalValues.BaseUrl}/widget/create", GlobalValues.GetPageOptions());

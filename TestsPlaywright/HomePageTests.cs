@@ -7,10 +7,7 @@ public class HomePageTests
     {
         var page = await PlaywrightTestHelper.CreatePageAsync();
 
-        await page.GotoAsync(GlobalValues.BaseUrl, new PageGotoOptions
-        {
-            WaitUntil = WaitUntilState.NetworkIdle
-        });
+        await page.GotoAsync(GlobalValues.BaseUrl, GlobalValues.GetPageOptions());
         var title = await page.TitleAsync();
 
         Assert.Equal("Manufacturer Manager", title);

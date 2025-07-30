@@ -1,15 +1,7 @@
 ﻿namespace TestsPlaywright;
 
-public class ColourPageTests
+public class ColourPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ColourPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task ColourHomePageLoads()
     {
