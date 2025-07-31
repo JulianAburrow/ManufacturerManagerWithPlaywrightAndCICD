@@ -140,6 +140,7 @@ public class ColourPageTests : BaseTestClass
     public async Task CanCreateColour()
     {
         var colour = new ColourModel();
+
         try
         {
             var initialCount = _context.Colours.Count();
@@ -148,7 +149,7 @@ public class ColourPageTests : BaseTestClass
             await page.GotoAsync($"{GlobalValues.BaseUrl}/colour/create", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Create Colour'");
 
-            var colourName = "Colour 123456";
+            var colourName = "Test Colour 123456";
             await page.GetByLabel("Name").FillAsync(colourName);
 
             var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
