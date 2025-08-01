@@ -83,6 +83,15 @@ jobs:
         done
         echo "SQL Server port did not open in time."
         exit 1
+
+    - name: Check DB Connectivity
+      run: |
+        docker run --rm --network host \
+          mcr.microsoft.com/mssql-tools \
+          /bin/bash -c "sleep 15 && \
+            /opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P $DB_PASSWORD -Q 'SELECT name FROM sys.databases;'"
+      env:
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     
     - name: Start MMUserInterface in background
       shell: bash
