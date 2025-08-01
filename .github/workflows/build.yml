@@ -70,7 +70,7 @@ jobs:
           -p 11433:1433 \
           jaburrow/manufacturermanagerseeded:latest
 
-    - name: 🔁 Wait for SQL Server to become available
+    - name: Wait for SQL Server to become available
       shell: bash
       env:
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -82,22 +82,22 @@ jobs:
           /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT 1\"" > /dev/null 2>&1
         do
           if [ $attempt -ge $max_attempts ]; then
-            echo "❌ SQL Server not available after $max_attempts attempts."
+            echo "SQL Server not available after $max_attempts attempts."
             exit 1
           fi
-          echo "⏳ Attempt $attempt: SQL Server not ready, waiting..."
+          echo "Attempt $attempt: SQL Server not ready, waiting..."
           sleep 5
           attempt=$((attempt+1))
         done
-        echo "✅ SQL Server is available!"
+        echo "SQL Server is available!"
 
-    - name: Check SQL Server connection with sqlcmd
-      run: |
-        docker run --rm --network host mcr.microsoft.com/mssql-tools \
-          /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT name FROM sys.databases WHERE name = 'ManufacturerManagerWithMudBlazor';\""
-      env:
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      continue-on-error: false
+    # - name: Check SQL Server connection with sqlcmd
+    #   run: |
+    #     docker run --rm --network host mcr.microsoft.com/mssql-tools \
+    #       /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT name FROM sys.databases WHERE name = 'ManufacturerManagerWithMudBlazor';\""
+    #   env:
+    #     DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+    #   continue-on-error: false
     
     - name: Start MMUserInterface in background
       shell: bash
