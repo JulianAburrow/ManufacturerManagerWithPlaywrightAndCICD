@@ -9,6 +9,5 @@ public abstract class BaseTestClass
     protected BaseTestClass()
     {
         _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
     }
 }
