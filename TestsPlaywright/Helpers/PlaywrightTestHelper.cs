@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace TestsPlaywright.Helpers;
+﻿namespace TestsPlaywright.Helpers;
 
 public static class PlaywrightTestHelper
 {
@@ -21,7 +19,8 @@ public static class PlaywrightTestHelper
     public static DbContextOptions<ManufacturerManagerContext> GetContextOptions()
     {
         return new DbContextOptionsBuilder<ManufacturerManagerContext>()
-            .UseSqlServer("Server=localhost,11433;initial catalog=ManufacturerManagerWithMudBlazor;persist security info=True;User Id=sa;Password=Pwd12345!;multipleactiveresultsets=True;TrustServerCertificate=true")
+            .UseSqlServer("Server=localhost,11433;initial catalog=ManufacturerManagerWithMudBlazor;persist security info=True;User Id=sa;Password=Pwd12345!;multipleactiveresultsets=True;TrustServerCertificate=true",
+                options => options.EnableRetryOnFailure())
             .Options;
     }
 }

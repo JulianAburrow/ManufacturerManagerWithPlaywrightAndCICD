@@ -24,7 +24,8 @@
                         Label="Manufacturer"
                         @bind-Value="WidgetDisplayModel.ManufacturerId"
                         @bind-Value:after="SetWidgetStatusId"
-                        HelperText="@(ManufacturerIsInactive ? "Widget status has been set to inactive as it is not possible to create an active widget for an inactive manufacturer" : string.Empty)">
+                        HelperText="@(ManufacturerIsInactive ? "Widget status has been set to inactive as it is not possible to create an active widget for an inactive manufacturer" : string.Empty)"
+                        data-testid="manufacturer-select">
                         @foreach (var manufacturer in Manufacturers)
                         {
                             <MudSelectItem T="int" Value="@manufacturer.ManufacturerId">
@@ -32,7 +33,11 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect id="ddlColour" Label="Colour" @bind-Value="WidgetDisplayModel.ColourId">
+                    <MudSelect
+                        id="ddlColour"
+                        Label="Colour"
+                        @bind-Value="WidgetDisplayModel.ColourId"
+                        data-testid="colour-select">
                         @foreach (var colour in Colours)
                         {
                             <MudSelectItem T="int?" Value="colour.ColourId">
@@ -40,7 +45,11 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect id="ddlColourJustification" Label="Colour Justification" @bind-Value="WidgetDisplayModel.ColourJustificationId">
+                    <MudSelect
+                        id="ddlColourJustification"
+                        Label="Colour Justification"
+                        @bind-Value="WidgetDisplayModel.ColourJustificationId"
+                        data-testid="colour-justification-select">
                         @foreach (var colourJustification in ColourJustifications)
                         {
                             <MudSelectItem T="int?" Value="colourJustification.ColourJustificationId">
@@ -48,7 +57,12 @@
                             </MudSelectItem>
                         }
                     </MudSelect>
-                    <MudSelect id="ddlStatus" Label="Status" @bind-Value="WidgetDisplayModel.StatusId" Disabled="ManufacturerIsInactive">
+                    <MudSelect
+                        id="ddlStatus"
+                        Label="Status"
+                        @bind-Value="WidgetDisplayModel.StatusId"
+                        Disabled="ManufacturerIsInactive"
+                        data-testid="status-select">
                         @foreach (var widgetStatus in WidgetStatuses)
                         {
                             <MudSelectItem T="int" Value="widgetStatus.StatusId">

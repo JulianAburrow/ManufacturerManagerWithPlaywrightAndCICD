@@ -29,7 +29,7 @@ public class ColourTests
     };
 
     [Fact]
-    public async Task CreateColourCreateColour()
+    public async Task CreateColourCreatesColour()
     {
         var initialCount = _manufacturerManagerContext.Colours.Count();
 

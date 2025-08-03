@@ -70,19 +70,26 @@ jobs:
           -p 11433:1433 \
           jaburrow/manufacturermanagerseeded:latest
 
-    - name: Wait for SQL Server port to be open
+    - name: Wait for SQL Server to become available
       shell: bash
+      env:
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        for i in {1..60}; do
-          if nc -z localhost 11433; then
-            echo "SQL Server port is open!"
-            exit 0
+        set -e
+        max_attempts=10
+        attempt=1
+        until docker run --rm --network host mcr.microsoft.com/mssql-tools \
+          /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT 1\"" > /dev/null 2>&1
+        do
+          if [ $attempt -ge $max_attempts ]; then
+            echo "SQL Server not available after $max_attempts attempts."
+            exit 1
           fi
-          echo "Waiting for SQL Server port..."
-          sleep 2
+          echo "Attempt $attempt: SQL Server not ready, waiting..."
+          sleep 5
+          attempt=$((attempt+1))
         done
-        echo "SQL Server port did not open in time."
-        exit 1
+        echo "SQL Server is available!"
     
     - name: Start MMUserInterface in background
       shell: bash

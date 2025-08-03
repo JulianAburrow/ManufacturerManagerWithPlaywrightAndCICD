@@ -1,17 +1,7 @@
-﻿using MMDataAccess.Enums;
+﻿namespace TestsPlaywright;
 
-namespace TestsPlaywright;
-
-public class ManufacturerPageTests
+public class ManufacturerPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ManufacturerPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task ManufacturerHomePageLoads()
     {
@@ -56,6 +46,7 @@ public class ManufacturerPageTests
     public async Task ViewButtonOnIndexPageNavigatesToViewManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -83,6 +74,7 @@ public class ManufacturerPageTests
     public async Task EditButtonOnIndexPageNavigatesToEditManufacturerPage()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -110,6 +102,7 @@ public class ManufacturerPageTests
     public async Task CanCreateManufacturer()
     {
         var manufacturer = new ManufacturerModel();
+
         try
         {
             var initialCount = _context.Manufacturers.Count();
@@ -119,7 +112,7 @@ public class ManufacturerPageTests
             await page.WaitForFunctionAsync("document.title === 'Create Manufacturer'");
 
             var manufacturerName = $"Test Manufacturer {Guid.NewGuid()}";
-            await page.GetByLabel("Name").FillAsync(manufacturerName);
+            await page.GetByLabel("Name").FillAsync($"{manufacturerName}");
             await page.ClickAsync("div[class*='mud-select'] div[class*='mud-input-control-input-container']");
             await page.ClickAsync("div.mud-popover div.mud-list-item:has-text('Active')");
 
@@ -137,6 +130,8 @@ public class ManufacturerPageTests
 
             manufacturer = await _context.Manufacturers.FirstOrDefaultAsync(m => m.Name == manufacturerName);
             Assert.NotNull(manufacturer);
+            Assert.Equal(manufacturerName, manufacturer.Name);
+            Assert.Equal((int)Enums.StatusEnum.Active, manufacturer.StatusId);
         }
         finally
         {
@@ -144,8 +139,7 @@ public class ManufacturerPageTests
             {
                 RemoveManufacturer(manufacturer.ManufacturerId);
             }                
-        }
-        
+        }        
     }
 
     [Fact]
@@ -208,6 +202,7 @@ public class ManufacturerPageTests
     public async Task CancelButtonOnEditPageNavigatesToIndex()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
@@ -235,6 +230,7 @@ public class ManufacturerPageTests
     public async Task CancelButtonOnViewPageNavigatesToIndex()
     {
         var manufacturerId = AddManufacturer();
+
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();

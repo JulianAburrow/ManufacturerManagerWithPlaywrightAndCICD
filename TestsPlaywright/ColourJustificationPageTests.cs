@@ -1,16 +1,7 @@
-﻿
-namespace TestsPlaywright;
+﻿namespace TestsPlaywright;
 
-public class ColourJustificationPageTests
+public class ColourJustificationPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ColourJustificationPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task ColourJustificationHomePageLoads()
     {
@@ -173,6 +164,7 @@ public class ColourJustificationPageTests
 
             colourJustification = await _context.ColourJustifications.FirstOrDefaultAsync(c => c.Justification == colourJustificationJustification);
             Assert.NotNull(colourJustification);
+            Assert.Equal(colourJustificationJustification, colourJustification.Justification);
         }
         finally
         {

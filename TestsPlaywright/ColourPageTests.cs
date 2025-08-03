@@ -1,15 +1,7 @@
 ﻿namespace TestsPlaywright;
 
-public class ColourPageTests
+public class ColourPageTests : BaseTestClass
 {
-    private readonly ManufacturerManagerContext _context;
-
-    public ColourPageTests()
-    {
-        _context = new ManufacturerManagerContext(PlaywrightTestHelper.GetContextOptions());
-        _context.Database.EnsureCreated();
-    }
-
     [Fact]
     public async Task ColourHomePageLoads()
     {
@@ -148,6 +140,7 @@ public class ColourPageTests
     public async Task CanCreateColour()
     {
         var colour = new ColourModel();
+
         try
         {
             var initialCount = _context.Colours.Count();
@@ -156,7 +149,7 @@ public class ColourPageTests
             await page.GotoAsync($"{GlobalValues.BaseUrl}/colour/create", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Create Colour'");
 
-            var colourName = "Colour 123456";
+            var colourName = "Test Colour 123456";
             await page.GetByLabel("Name").FillAsync(colourName);
 
             var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
@@ -173,6 +166,7 @@ public class ColourPageTests
             
             colour = await _context.Colours.FirstOrDefaultAsync(c => c.Name == colourName);
             Assert.NotNull(colour);
+            Assert.Equal(colourName, colour.Name);
         }
         finally
         {
@@ -194,7 +188,7 @@ public class ColourPageTests
             await page.GotoAsync($"{GlobalValues.BaseUrl}/colour/edit/{colourId}", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Edit Colour'");
 
-            var updatedColourName = "Colour 654321";
+            var updatedColourName = "Updated Colour 654321";
             await page.GetByLabel("Name").FillAsync(updatedColourName);
 
             var submitButton = page.GetByRole(AriaRole.Button, new() { Name = "Submit" });
@@ -362,7 +356,7 @@ public class ColourPageTests
     {
         var newColour = new ColourModel
         {
-            Name = "Colour 123546",
+            Name = "Test Colour 123546",
         };
         _context.Colours.Add(newColour);
         _context.SaveChanges();
