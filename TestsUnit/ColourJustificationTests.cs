@@ -65,7 +65,7 @@ public class ColourJustificationTests
 
         var colourJustifications = await _colourJustificationHandler.GetColourJustificationsAsync();
 
-        colourJustifications.Count().Should().Be(initialCount + 4);
+        colourJustifications.Count.Should().Be(initialCount + 4);
     }
 
     [Fact]
