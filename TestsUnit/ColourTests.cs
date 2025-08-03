@@ -57,10 +57,11 @@ public class ColourTests
     {
         var initialCount = _manufacturerManagerContext.Colours.Count();
 
-        await _colourHandler.CreateColourAsync(ColourRed, false);
-        await _colourHandler.CreateColourAsync(ColourGreen, false);
-        await _colourHandler.CreateColourAsync(ColourBlue, false);
-        await _colourHandler.CreateColourAsync(ColourYellow, true);
+        _manufacturerManagerContext.Colours.Add(ColourRed);
+        _manufacturerManagerContext.Colours.Add(ColourGreen);
+        _manufacturerManagerContext.Colours.Add(ColourBlue);
+        _manufacturerManagerContext.Colours.Add(ColourYellow);
+        _manufacturerManagerContext.SaveChanges();
 
         var colours = await _colourHandler.GetColoursAsync();
 
