@@ -10,6 +10,15 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
+    services:
+      sqlserver:
+        image: jaburrow/manufacturermanagerseeded
+        ports:
+          - 1433:1433
+        env:
+          SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
+          ACCEPT_EULA: Y
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -97,7 +106,7 @@ jobs:
       run: |
         set -euo pipefail
 
-        CONTAINER_NAME=db  # Change this to the actual container name if different
+        CONTAINER_NAME=sqlserver  # Match this to your `services:` key
 
         if ! docker ps --format '{{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
           echo "Container '$CONTAINER_NAME' not running. Cannot perform DB check."
