@@ -95,11 +95,27 @@ jobs:
       env:
         SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
       run: |
-        RESULT=$(docker exec db /opt/mssql-tools/bin/sqlcmd \
+        set -euo pipefail
+
+        CONTAINER_NAME=db  # Change this to the actual container name if different
+
+        if ! docker ps --format '{{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
+          echo "Container '$CONTAINER_NAME' not running. Cannot perform DB check."
+          exit 1
+        fi
+
+        RESULT=$(docker exec "$CONTAINER_NAME" /opt/mssql-tools/bin/sqlcmd \
           -S localhost -U sa -P "$SA_PASSWORD" \
-          -Q "SELECT COUNT(*) FROM sys.databases WHERE name = 'ManufacturerManagerWithMudBlazor';" | tail -n 1)
+          -Q "SET NOCOUNT ON; SELECT COUNT(*) FROM sys.databases WHERE name = 'ManufacturerManagerWithMudBlazor';" \
+          | tail -n 1 | tr -d '\r')
+
+        if ! [[ "$RESULT" =~ ^[0-9]+$ ]]; then
+          echo "Unexpected result from SQL query: '$RESULT'"
+          exit 1
+        fi
+
         if [ "$RESULT" -ne 1 ]; then
-          echo "Database not found!"
+          echo "Database 'ManufacturerManagerWithMudBlazor' not found!"
           exit 1
         else
           echo "Database exists and ready."
