@@ -21,12 +21,12 @@
 }
 
 <MudTable
-Items="@Colours"
-SortLabel="SortBy"
-Hover
-RowsPerPage="10"
-FixedHeader
-Height="500px">
+    Items="@Colours"
+    SortLabel="SortBy"
+    Hover
+    RowsPerPage="10"
+    FixedHeader
+    Height="500px">
     <HeaderContent>
         <MudTh title="Sort by Name">
             <MudTableSortLabel SortBy="new Func<ColourModel, object>(x => x.Name)">
