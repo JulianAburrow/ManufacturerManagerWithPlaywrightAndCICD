@@ -14,12 +14,12 @@ public partial class Edit
 
     protected override void OnInitialized()
     {
-        MainLayout.SetBreadcrumbs(new List<BreadcrumbItem>
-        {
+        MainLayout.SetBreadcrumbs(
+        [
             GetHomeBreadcrumbItem(),
             GetManufacturerHomeBreadcrumbItem(),
             GetCustomBreadcrumbItem(EditTextForBreadcrumb),
-        });
+        ]);
     }
 
     private async Task UpdateManufacturer()
@@ -31,9 +31,10 @@ public partial class Edit
             Snackbar.Add($"Manufacturer {ManufacturerModel.Name} successfully updated.", Severity.Success);
             NavigationManager.NavigateTo("/manufacturers/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred updating manufacturer {ManufacturerModel.Name}. Please try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

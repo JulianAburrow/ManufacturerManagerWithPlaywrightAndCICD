@@ -1,5 +1,4 @@
-﻿
-namespace MMDataAccess.Configuration;
+﻿namespace MMDataAccess.Configuration;
 
 public class ErrorConfiguration : IEntityTypeConfiguration<ErrorModel>
 {

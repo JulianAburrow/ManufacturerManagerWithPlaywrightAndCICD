@@ -1,6 +1,6 @@
-﻿namespace MMDataAccess.Models;
+﻿namespace MMUserInterface.Models;
 
-public class ErrorModel
+public class ErrorDisplayModel
 {
     public int ErrorId { get; set; }
 

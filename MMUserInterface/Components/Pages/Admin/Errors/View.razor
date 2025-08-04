@@ -1,0 +1,33 @@
+﻿@page "/error/view/{ErrorId:int}"
+@inherits ErrorBasePageClass
+
+<PageTitle>View Error</PageTitle>
+
+@if (ErrorModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@Error" />
+    return;
+}
+
+<MudGrid>
+    <MudItem sm="7">
+        <MudCard>
+            <MudCardContent>
+                <MudField Label="Error Date">@ErrorModel.ErrorDate</MudField>
+                <MudField Label="Error Message">@ErrorModel.ErrorMessage</MudField>
+                <MudField Label="Exception">@ErrorModel.Exception</MudField>
+                <MudField Label="Inner Exception">@ErrorModel.InnerException</MudField>
+                <MudField Label="Stack Trace">@ErrorModel.StackTrace</MudField>
+                <MudField Label="Resolved">@ErrorModel.Resolved</MudField>
+                <MudField Label="Resolved Date">@ErrorModel.ResolvedDate</MudField>
+            </MudCardContent>
+            <MudCardActions>
+                <a class="btn btn-primary" href="/error/edit/@ErrorModel.ErrorId">Edit</a>
+                &nbsp;
+                <a class="btn btn-danger" href="/error/delete/@ErrorModel.ErrorId">Delete</a>
+                &nbsp;
+                <a class="btn btn-primary" href="/errors/index">Cancel</a>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+</MudGrid>

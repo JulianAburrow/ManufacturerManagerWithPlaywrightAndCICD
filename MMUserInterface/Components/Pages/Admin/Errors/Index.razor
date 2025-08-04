@@ -1,0 +1,58 @@
+﻿@page "/errors/index"
+@inherits ErrorBasePageClass
+
+<PageTitle>Errors</PageTitle>
+
+@if (Errors == null)
+{
+    <LoadingMessageComponent ValueToShow="@ErrorPlural" />
+    return;
+}
+
+@if (Errors!.Count == 0)
+{
+    <p>No Errors found.</p>
+    return;
+}
+
+<MudTable
+    Items="@Errors"
+    SortLabel="SortBy"
+    Hover
+    RowsPerPage="10"
+    FixedHeader
+    Height="500px">
+    <HeaderContent>
+        <MudTh title="Sort by Error Date">
+            <MudTableSortLabel SortBy="new Func<ErrorModel, object>(x => x.ErrorDate)">
+                Error Date
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Error Message">
+            <MudTableSortLabel SortBy="new Func<ErrorModel, object>(x => x.ErrorMessage)">
+                Error Message
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh title="Sort by Resolved">
+            <MudTableSortLabel SortBy="new Func<ErrorModel, object>(x => x.Resolved)">
+                Resolved
+            </MudTableSortLabel>
+        </MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.ErrorDate</MudTd>
+        <MudTd>@context.ErrorMessage</MudTd>
+        <MudTd>@context.Resolved</MudTd>
+        <MudTd>
+            <a class="btn btn-primary" href="/error/view/@context.ErrorId">View</a>
+            &nbsp;
+            <a class="btn btn-primary" href="/error/edit/@context.ErrorId">Edit</a>
+            &nbsp;
+            <a class="btn btn-danger" href="/error/delete/@context.ErrorId">Delete</a>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager PageSizeOptions="new int[] { 5, 10, 25, 50, 100, int.MaxValue }" />
+    </PagerContent>
+</MudTable>

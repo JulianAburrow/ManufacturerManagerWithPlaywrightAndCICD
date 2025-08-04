@@ -55,9 +55,10 @@ public partial class Create
             Snackbar.Add($"Widget {WidgetModel.Name} successfully created.", Severity.Success);
             NavigationManager.NavigateTo("/widgets/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred creating Widget {WidgetModel.Name}. Please try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

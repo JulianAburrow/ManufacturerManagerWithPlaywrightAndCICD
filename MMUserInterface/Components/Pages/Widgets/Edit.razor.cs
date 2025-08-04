@@ -65,9 +65,10 @@ public partial class Edit
             Snackbar.Add($"Widget {WidgetModel.Name} successfully updated.", Severity.Success);
             NavigationManager.NavigateTo("/widgets/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred updating {WidgetModel.Name}. Please try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

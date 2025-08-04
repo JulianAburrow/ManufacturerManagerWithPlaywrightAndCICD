@@ -6,6 +6,8 @@ public class BasePageClass : ComponentBase
 
     [Inject] protected ISnackbar Snackbar { get; set; } = default!;
 
+    [Inject] protected IErrorHandler ErrorHandler { get; set; } = default!;
+
     [CascadingParameter] public MainLayout MainLayout { get; set; } = new();
 
     protected string Values = "Values";

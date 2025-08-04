@@ -28,9 +28,10 @@ public partial class Delete
             Snackbar.Add($"Colour Justification {ColourJustificationModel.Justification} successfully deleted.", Severity.Success);
             NavigationManager.NavigateTo("/colourjustifications/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred deleting Colour Justification {ColourJustificationModel.Justification}. PLease try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

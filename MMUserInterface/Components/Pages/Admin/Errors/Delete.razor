@@ -1,0 +1,19 @@
+﻿@page "/error/delete/{ErrorId:int}"
+@inherits ErrorBasePageClass
+
+<PageTitle>Delete Error</PageTitle>
+
+@if (ErrorModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@Error" />
+    return;
+}
+
+<ConfirmDeleteComponent ObjectType="@Error" ObjectName="@ErrorModel.ErrorMessage" />
+
+<br />
+<br />
+
+<button class="btn btn-danger" @onclick="DeleteError">Delete</button>
+&nbsp;
+<a class="btn btn-primary" href="/errors/index">Cancel</a>

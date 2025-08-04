@@ -6,7 +6,7 @@ public interface IErrorHandler
 
     Task<List<ErrorModel>> GetErrorsAsync();
 
-    Task CreateErrorAsync(ErrorModel error, bool callSaveChanges);
+    Task CreateErrorAsync(Exception ex, bool callSaveChanges);
 
     Task UpdateErrorAsync(ErrorModel error, bool callSaveChanges);
 

@@ -1,0 +1,35 @@
+﻿@page "/error/edit/{ErrorId:int}"
+@inherits ErrorBasePageClass
+
+<PageTitle>Edit Error</PageTitle>
+
+@if (ErrorDisplayModel == null)
+{
+    <LoadingMessageComponent ValueToShow="@Error" />
+    return;
+}
+
+<EditForm Model="@ErrorDisplayModel" OnValidSubmit="UpdateError">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <MudGrid>
+        <MudItem sm="7">
+            <MudCard>
+                <MudCardContent>                    
+                    <MudField Label="Error Date">@ErrorDisplayModel.ErrorDate</MudField>
+                    <MudField Label="Error Message">@ErrorDisplayModel.ErrorMessage</MudField>
+                    <MudField Label="Exception">@ErrorDisplayModel.Exception</MudField>
+                    <MudField Label="Inner Exception">@ErrorDisplayModel.InnerException</MudField>
+                    <MudField Label="Stack Trace">@ErrorDisplayModel.StackTrace</MudField>
+                    <MudCheckBox Label="Resolved" @bind-Value="ErrorDisplayModel.Resolved"></MudCheckBox>
+                    <MudField Label="Resolved Date">@ErrorDisplayModel.ResolvedDate</MudField>
+                </MudCardContent>
+                <MudCardActions>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    &nbsp;
+                    <a class="btn btn-primary" href="/errors/index">Cancel</a>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
