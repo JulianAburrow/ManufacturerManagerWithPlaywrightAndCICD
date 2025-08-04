@@ -29,9 +29,10 @@ public partial class Edit
             Snackbar.Add($"Colour Justification {ColourJustificationModel.Justification} successfully updated.", Severity.Success);
             NavigationManager.NavigateTo("/colourjustifications/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred updating Colour Justification {ColourJustificationModel.Justification}. Please try again", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

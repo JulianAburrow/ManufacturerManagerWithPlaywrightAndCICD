@@ -16,12 +16,12 @@ public partial class Create
 
     protected override void OnInitialized()
     {
-        MainLayout.SetBreadcrumbs(new List<BreadcrumbItem>
-        {
+        MainLayout.SetBreadcrumbs(
+        [
             GetHomeBreadcrumbItem(),
             GetManufacturerHomeBreadcrumbItem(),
             GetCustomBreadcrumbItem(CreateTextForBreadcrumb)
-        });
+        ]);
     }
 
     private async Task CreateManufacturer()
@@ -33,9 +33,10 @@ public partial class Create
             Snackbar.Add($"Manufacturer {ManufacturerModel.Name} successfully created.", Severity.Success);
             NavigationManager.NavigateTo("/manufacturers/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred creating manufacturer {ManufacturerModel.Name}. Please try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

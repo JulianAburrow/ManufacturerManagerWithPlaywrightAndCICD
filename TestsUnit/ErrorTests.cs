@@ -11,19 +11,24 @@ public class ErrorTests
         _errorHandler = new ErrorHandler(_manufacturerManagerContext);
     }
 
+    private readonly Exception Exception1 = new("Exception1", new Exception("InnerException1"));
+    private readonly Exception Exception2 = new("Exception2", new Exception("InnerException2"));
     private readonly ErrorModel Error1 = new()
     {
         ErrorDate = DateTime.Now,
         ErrorMessage = "Error1",
+        Exception = "Exception1",
+        InnerException = "InnerException1",
         StackTrace = "This is the stack trace for Error1",
         Resolved = false,
         ResolvedDate = null,
     };
-
     private readonly ErrorModel Error2 = new()
     {
         ErrorDate = DateTime.Now,
         ErrorMessage = "Error2",
+        Exception = "Exception2",
+        InnerException = "InnerException2",
         StackTrace = "This is the stack trace for Error2",
         Resolved = false,
         ResolvedDate = null,
@@ -34,8 +39,8 @@ public class ErrorTests
     {
         var initialCount = _manufacturerManagerContext.Errors.Count();
 
-        await _errorHandler.CreateErrorAsync(Error1, false);
-        await _errorHandler.CreateErrorAsync(Error2, true);
+        await _errorHandler.CreateErrorAsync(Exception1, false);
+        await _errorHandler.CreateErrorAsync(Exception2, true);
 
         _manufacturerManagerContext.Errors.Count().Should().Be(initialCount + 2);
     }

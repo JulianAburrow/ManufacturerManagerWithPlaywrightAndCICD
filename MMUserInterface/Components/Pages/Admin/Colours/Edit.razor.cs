@@ -29,9 +29,10 @@ public partial class Edit
             Snackbar.Add($"Colour {ColourModel.Name} successfully updated.", Severity.Success);
             NavigationManager.NavigateTo("/colours/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred updating colour {ColourModel.Name}. Please try again.", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }

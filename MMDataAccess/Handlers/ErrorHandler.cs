@@ -1,15 +1,20 @@
-﻿
-using Microsoft.Extensions.Options;
-
-namespace MMDataAccess.Handlers;
+﻿namespace MMDataAccess.Handlers;
 
 public class ErrorHandler(ManufacturerManagerContext context) : IErrorHandler
 {
     private readonly ManufacturerManagerContext _context = context;
 
-    public async Task CreateErrorAsync(ErrorModel error, bool callSaveChanges)
+    public async Task CreateErrorAsync(Exception ex, bool callSaveChanges)
     {
-        _context.Errors.Add(error);
+        var errorModel = new ErrorModel
+        {
+            ErrorDate = DateTime.UtcNow,
+            ErrorMessage = ex.Message,
+            Exception = ex.GetType().ToString(),
+            InnerException = ex.InnerException?.Message ?? "No inner exception",
+            StackTrace = ex.StackTrace,
+        };
+        _context.Errors.Add(errorModel);
         if (callSaveChanges)
             await SaveChangesAsync();
     }

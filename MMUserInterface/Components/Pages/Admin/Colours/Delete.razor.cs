@@ -27,9 +27,10 @@ public partial class Delete
             Snackbar.Add($"Colour {ColourModel.Name} successfully deleted", Severity.Success);
             NavigationManager.NavigateTo("/colours/index");
         }
-        catch
+        catch (Exception ex)
         {
             Snackbar.Add($"An error occurred deleting colour {ColourModel.Name}. Please try again", Severity.Error);
+            await ErrorHandler.CreateErrorAsync(ex, true);
         }
     }
 }
