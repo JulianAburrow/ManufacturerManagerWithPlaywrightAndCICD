@@ -37,7 +37,7 @@ public class ErrorBasePageClass : BasePageClass
         ErrorModel.StackTrace = ErrorDisplayModel.StackTrace;
         ErrorModel.Resolved = ErrorDisplayModel.Resolved;
         ErrorModel.ResolvedDate = ErrorDisplayModel.Resolved
-            ? DateTime.UtcNow
+            ? DateTime.Now
             : ErrorModel.ResolvedDate = null;
     }
 }

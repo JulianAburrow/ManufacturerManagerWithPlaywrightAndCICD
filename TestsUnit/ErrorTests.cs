@@ -74,7 +74,7 @@ public class ErrorTests
     public async Task UpdateErrorUpdatesError()
     {
         var newErrorMessage = "UpdatedError1";
-        var resolvedDate = DateTime.UtcNow;
+        var resolvedDate = DateTime.Now;
 
         _manufacturerManagerContext.Errors.Add(Error1);
         _manufacturerManagerContext.SaveChanges();

@@ -8,7 +8,7 @@ public class ErrorHandler(ManufacturerManagerContext context) : IErrorHandler
     {
         var errorModel = new ErrorModel
         {
-            ErrorDate = DateTime.UtcNow,
+            ErrorDate = DateTime.Now,
             ErrorMessage = ex.Message,
             Exception = ex.GetType().ToString(),
             InnerException = ex.InnerException?.Message ?? "No inner exception",

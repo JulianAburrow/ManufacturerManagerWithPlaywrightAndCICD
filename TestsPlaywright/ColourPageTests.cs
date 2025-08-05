@@ -185,6 +185,7 @@ public class ColourPageTests : BaseTestClass
         try
         {
             var page = await PlaywrightTestHelper.CreatePageAsync();
+
             await page.GotoAsync($"{GlobalValues.BaseUrl}/colour/edit/{colourId}", GlobalValues.GetPageOptions());
             await page.WaitForFunctionAsync("document.title === 'Edit Colour'");
 

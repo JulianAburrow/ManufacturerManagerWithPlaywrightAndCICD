@@ -21,6 +21,13 @@ public partial class Edit
         ]);
     }
 
+    private void SetResolvedDate()
+    {
+        ErrorDisplayModel.ResolvedDate = ErrorDisplayModel.Resolved
+            ? DateTime.Now
+            : null;
+    }
+
     private async Task UpdateError()
     {
         CopyDisplayModelToModel();

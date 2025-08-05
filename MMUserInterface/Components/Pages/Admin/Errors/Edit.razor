@@ -21,8 +21,8 @@
                     <MudField Label="Exception">@ErrorDisplayModel.Exception</MudField>
                     <MudField Label="Inner Exception">@ErrorDisplayModel.InnerException</MudField>
                     <MudField Label="Stack Trace">@ErrorDisplayModel.StackTrace</MudField>
-                    <MudCheckBox Label="Resolved" @bind-Value="ErrorDisplayModel.Resolved"></MudCheckBox>
-                    <MudField Label="Resolved Date">@ErrorDisplayModel.ResolvedDate</MudField>
+                    <MudCheckBox T="bool" @bind-Value="ErrorDisplayModel.Resolved" @bind-Value:after="SetResolvedDate" Label="Resolved" data-testid="error-resolved-checkbox"></MudCheckBox>
+                    <MudField Label="Resolved Date" data-testid="resolved-date-label">@ErrorDisplayModel.ResolvedDate</MudField>
                 </MudCardContent>
                 <MudCardActions>
                     <button type="submit" class="btn btn-primary">Submit</button>
