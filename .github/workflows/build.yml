@@ -24,8 +24,8 @@ jobs:
 
       - name: Install sqlcmd and sqlpackage via .NET tools
         run: |
-          dotnet tool install -g Microsoft.SqlServer.SqlCmd --version 0.1.0
-          export PATH="$PATH:$HOME/.dotnet/tools"
+          dotnet tool install -g Microsoft.Data.SqlClient.SqlCmd --version 3.0.0
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
           curl -L -o sqlpackage.zip https://aka.ms/sqlpackage-linux
           unzip sqlpackage.zip -d sqlpackage
