@@ -24,15 +24,15 @@ jobs:
 
       - name: Install sqlcmd and sqlpackage manually
         run: |
-          # Install new cross-platform sqlcmd
-          curl -LO https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
+          # Download and extract sqlcmd
+          curl -L -o sqlcmd-linux-x64.tar.gz https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
           mkdir sqlcmd
           tar -xzf sqlcmd-linux-x64.tar.gz -C sqlcmd
           sudo mv sqlcmd/sqlcmd /usr/local/bin/
 
-          # Install sqlpackage
-          curl -LO https://aka.ms/sqlpackage-linux
-          unzip sqlpackage-linux -d sqlpackage
+          # Download and extract sqlpackage
+          curl -L -o sqlpackage.zip https://aka.ms/sqlpackage-linux
+          unzip sqlpackage.zip -d sqlpackage
           sudo mv sqlpackage/sqlpackage /usr/local/bin/
 
       - name: Wait for SQL Server to be ready
