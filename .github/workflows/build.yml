@@ -26,7 +26,7 @@ jobs:
         run: |
           docker run --rm \
             --network host \
-            mcr.microsoft.com/mssql/server:2019-latest \
+            mcr.microsoft.com/mssql/server:2022-latest \
             bash -c "sqlcmd -S localhost,11433 -U SA -P '${{ secrets.SQL_SA_PASSWORD }}' -i /setup.sql"
         working-directory: ./scripts
 
