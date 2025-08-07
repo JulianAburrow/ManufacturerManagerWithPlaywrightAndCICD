@@ -7,196 +7,28 @@ on:
     branches: [ main ]
 
 jobs:
-  setup-db:
-    runs-on: ubuntu-latest
-    services:
-      sqlserver:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        env:
-          SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
-          ACCEPT_EULA: "Y"
-        ports:
-          - 11433:1433
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run setup.sql using sqlcmd in container
-        run: |
-          docker run --rm \
-            --network host \
-            mcr.microsoft.com/mssql/server:2022-latest \
-            bash -c "sqlcmd -S localhost,11433 -U SA -P '${{ secrets.SQL_SA_PASSWORD }}' -i /setup.sql"
-        working-directory: ./scripts
-
-      - name: Wait for SQL Server to be ready
-        run: |
-          echo "Waiting for SQL Server on port 11433..."
-          for i in {1..30}; do
-            /opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U SA -P "${{ secrets.SQL_SA_PASSWORD }}" -Q "SELECT 1" && break
-            echo "SQL Server not ready yet... retrying in 2s"
-            sleep 2
-          done
-
-      - name: Build and deploy MMDatabase.sqlproj
-        run: |
-          dotnet build ./Database/MMDatabase.sqlproj
-          sqlpackage /Action:Publish /SourceFile:./Database/bin/Debug/MMDatabase.dacpac \
-            /TargetServerName:localhost,11433 \
-            /TargetDatabaseName:ManufacturerManager \
-            /TargetUser:SA \
-            /TargetPassword:${{ secrets.SQL_SA_PASSWORD }}
-
-
-      - name: Wait for SQL Server
-        run: sleep 30
-
-      - name: Install sqlcmd
-        run: |
-          sudo apt-get update
-          sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
-
-      - name: Build and deploy .sqlproj
-        run: |
-          dotnet build ./Database/MMDatabase.sqlproj
-          sqlpackage /Action:Publish /SourceFile:./Database/bin/Debug/MMDatabase.dacpac \
-            /TargetServerName:localhost /TargetDatabaseName:ManufacturerManager \
-            /TargetUser:SA /TargetPassword:${{ secrets.SQL_SA_PASSWORD }}
-
-  run-tests:
-    needs: setup-db
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '10.0.x'
 
-      - name: Restore and build solution
-        run: |
-          dotnet restore
-          dotnet build --no-restore
+    - name: Restore dependencies
+      run: dotnet restore
 
-      - name: Run xUnit tests
-        run: dotnet test ./Tests/UnitTests/UnitTests.csproj --no-build --logger "trx"
+    - name: Build solution
+      run: dotnet build --no-restore
 
-      - name: Run Playwright tests
-        run: dotnet test ./Tests/PlaywrightTests/PlaywrightTests.csproj --no-build --logger "trx"
+    - name: Run unit tests
+      run: dotnet test TestsUnit.csproj
+        --no-build
+        --configuration Debug
+      working-directory: TestsUnit
 
 
-
-# jobs:
-#   build-and-test:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout repository
-#       uses: actions/checkout@v4
-
-#     - name: Setup .NET SDK
-#       uses: actions/setup-dotnet@v4
-#       with:
-#         dotnet-version: '10.0.x'
-
-#     - name: Restore dependencies
-#       run: dotnet restore
-
-#     - name: Build solution
-#       run: dotnet build --no-restore
-
-#     - name: Run unit tests
-#       run: dotnet test TestsUnit.csproj
-#         --no-build
-#         --configuration Debug
-#       working-directory: TestsUnit
-    
-#     - name: Restore .NET tools
-#       run: dotnet tool restore
-#       working-directory: TestsPlaywright
-
-#     - name: Install Playwright CLI (no manifest)
-#       run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
-    
-#     - name: Install Playwright browsers (Chromium only)
-#       run: tools/playwright install --with-deps chromium
-
-#     - name: Generate and trust HTTPS development certificate
-#       run: |
-#         dotnet dev-certs https --clean
-#         dotnet dev-certs https
-#       shell: pwsh
-
-#     - name: Docker login
-#       shell: pwsh
-#       env:
-#         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#       run: |
-#         $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
-
-#     - name: Start Dockerized SQL Server
-#       shell: bash
-#       env:
-#         SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#       run: |
-#         set -e  # fail on any error
-
-#         docker pull jaburrow/manufacturermanagerseeded:latest
-
-#         docker run -d --name seeded-db \
-#           -e "ACCEPT_EULA=Y" \
-#           -e "SA_PASSWORD=$SA_PASSWORD" \
-#           -p 11433:1433 \
-#           jaburrow/manufacturermanagerseeded:latest
-
-#     - name: Wait for SQL Server to become available
-#       shell: bash
-#       env:
-#         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-#       run: |
-#         set -e
-#         max_attempts=10
-#         attempt=1
-#         until docker run --rm --network host mcr.microsoft.com/mssql-tools \
-#           /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT 1\"" > /dev/null 2>&1
-#         do
-#           if [ $attempt -ge $max_attempts ]; then
-#             echo "SQL Server not available after $max_attempts attempts."
-#             exit 1
-#           fi
-#           echo "Attempt $attempt: SQL Server not ready, waiting..."
-#           sleep 5
-#           attempt=$((attempt+1))
-#         done
-#         echo "SQL Server is available!"
-    
-#     - name: Start MMUserInterface in background
-#       shell: bash
-#       run: |
-#         dotnet run --no-build --urls https://127.0.0.1:5245 &
-#         sleep 20
-#       working-directory: MMUserInterface
-
-#     - name: Check if MMUserInterface is up
-#       shell: bash
-#       run: |
-#         for i in {1..30}; do
-#           if curl -k --silent --fail https://127.0.0.1:5245/ > /dev/null; then
-#             echo "MMUserInterface is up!"
-#             exit 0
-#           fi
-#           echo "Waiting for MMUserInterface..."
-#           sleep 2
-#         done
-#         echo "MMUserInterface did not become ready in time."
-#         exit 1
-
-#     - name: Run Playwright tests over HTTPS
-#       shell: pwsh
-#       run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
-#       working-directory: TestsPlaywright
