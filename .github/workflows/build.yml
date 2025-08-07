@@ -24,11 +24,13 @@ jobs:
 
       - name: Install sqlcmd and sqlpackage manually
         run: |
-          curl -LO https://github.com/Microsoft/homebrew-mssql-release/releases/download/v1.0.0/sqlcmd-linux.tar.gz
+          # Install new cross-platform sqlcmd
+          curl -LO https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
           mkdir sqlcmd
-          tar -xzf sqlcmd-linux.tar.gz -C sqlcmd
+          tar -xzf sqlcmd-linux-x64.tar.gz -C sqlcmd
           sudo mv sqlcmd/sqlcmd /usr/local/bin/
 
+          # Install sqlpackage
           curl -LO https://aka.ms/sqlpackage-linux
           unzip sqlpackage-linux -d sqlpackage
           sudo mv sqlpackage/sqlpackage /usr/local/bin/
