@@ -22,14 +22,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install sqlcmd and sqlpackage via .NET tools
+      - name: Run setup.sql using sqlcmd in Docker
         run: |
-          dotnet tool install -g Microsoft.Data.SqlClient.SqlCmd --version 3.0.0
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-          curl -L -o sqlpackage.zip https://aka.ms/sqlpackage-linux
-          unzip sqlpackage.zip -d sqlpackage
-          sudo mv sqlpackage/sqlpackage /usr/local/bin/
+          docker run --rm \
+            --network host \
+            mcr.microsoft.com/mssql-tools \
+            sqlcmd -S localhost,11433 -U SA -P "${{ secrets.SQL_SA_PASSWORD }}" -i ./scripts/setup.sql
 
       - name: Wait for SQL Server to be ready
         run: |
