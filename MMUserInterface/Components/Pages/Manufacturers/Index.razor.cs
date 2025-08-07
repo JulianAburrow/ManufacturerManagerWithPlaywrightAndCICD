@@ -7,7 +7,7 @@ public partial class Index
     protected override async Task OnInitializedAsync()
     {
         Manufacturers = await ManufacturerHandler.GetManufacturersAsync();
-        Snackbar.Add($"{Manufacturers.Count} item(s) found.", Manufacturers.Count == 0 ? Severity.Error : Severity.Success);
+        Snackbar.Add($"{Manufacturers.Count} item(s) found.", Manufacturers.Count > 0 ? Severity.Info : Severity.Warning);
         MainLayout.SetHeaderValue("Manufacturers");
     }
 

@@ -1,0 +1,5 @@
+﻿CREATE TABLE WidgetStatus (
+	StatusId INT NOT NULL IDENTITY (1, 1),
+	StatusName NVARCHAR(20) NOT NULL,
+	CONSTRAINT PK_WidgetStatus PRIMARY KEY (StatusId)
+)

@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMUserInterface", "MMUserIn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MMDataAccess", "MMDataAccess\MMDataAccess.csproj", "{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DbScripts", "DbScripts", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-	ProjectSection(SolutionItems) = preProject
-		DbScripts\ManufacturerManagerWithMudBlazor_Db_Script.sql = DbScripts\ManufacturerManagerWithMudBlazor_Db_Script.sql
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9C5B2848-EC86-4053-BA13-35AD01599342}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{655688C1-8A09-4A79-B0CB-3EA6425A5A83}"
@@ -24,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsUnit", "TestsUnit\TestsUnit.csproj", "{98E8096D-0F3A-9C5B-94FB-277806BBEE11}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsPlaywright", "TestsPlaywright\TestsPlaywright.csproj", "{6750483F-2883-2F9A-5074-A4BB37DF6779}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MMDatabase", "MMDatabase\MMDatabase.sqlproj", "{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +44,12 @@ Global
 		{6750483F-2883-2F9A-5074-A4BB37DF6779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6750483F-2883-2F9A-5074-A4BB37DF6779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6750483F-2883-2F9A-5074-A4BB37DF6779}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +59,7 @@ Global
 		{77B6B0E0-52D2-4335-AFDA-0280A0A3F9DC} = {9C5B2848-EC86-4053-BA13-35AD01599342}
 		{98E8096D-0F3A-9C5B-94FB-277806BBEE11} = {655688C1-8A09-4A79-B0CB-3EA6425A5A83}
 		{6750483F-2883-2F9A-5074-A4BB37DF6779} = {655688C1-8A09-4A79-B0CB-3EA6425A5A83}
+		{32C7E3A0-FDBC-46A6-9A22-E375EB6A2D4C} = {9C5B2848-EC86-4053-BA13-35AD01599342}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {26F5386C-711F-46BB-B877-E99D06B5D775}
