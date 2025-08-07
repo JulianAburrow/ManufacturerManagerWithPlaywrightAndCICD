@@ -22,23 +22,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install sqlcmd and sqlpackage manually
+      - name: Install sqlcmd and sqlpackage via .NET tools
         run: |
-          # Download sqlcmd release
-          curl -L -o sqlcmd.tar.gz https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
+          dotnet tool install -g Microsoft.SqlServer.SqlCmd --version 0.1.0
+          export PATH="$PATH:$HOME/.dotnet/tools"
 
-          # Check file size before extracting
-          if [ $(stat -c%s sqlcmd.tar.gz) -lt 10000 ]; then
-            echo "sqlcmd download failed or incomplete"
-            cat sqlcmd.tar.gz
-            exit 1
-          fi
-
-          mkdir sqlcmd
-          tar -xzf sqlcmd.tar.gz -C sqlcmd
-          sudo mv sqlcmd/sqlcmd /usr/local/bin/
-
-          # Download sqlpackage
           curl -L -o sqlpackage.zip https://aka.ms/sqlpackage-linux
           unzip sqlpackage.zip -d sqlpackage
           sudo mv sqlpackage/sqlpackage /usr/local/bin/
