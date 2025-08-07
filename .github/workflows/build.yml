@@ -22,12 +22,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run setup.sql using sqlcmd in Docker
+      - name: Run setup.sql using sqlcmd in container
         run: |
           docker run --rm \
             --network host \
-            mcr.microsoft.com/mssql-tools \
-            sqlcmd -S localhost,11433 -U SA -P "${{ secrets.SQL_SA_PASSWORD }}" -i ./scripts/setup.sql
+            mcr.microsoft.com/mssql/server:2019-latest \
+            bash -c "sqlcmd -S localhost,11433 -U SA -P '${{ secrets.SQL_SA_PASSWORD }}' -i /setup.sql"
+        working-directory: ./scripts
 
       - name: Wait for SQL Server to be ready
         run: |
