@@ -26,8 +26,8 @@ jobs:
 
     - name: Build selected projects
       run: |
-        dotnet build src/MMDataAccess/MMDataAccess.csproj --configuration Release
-        dotnet build src/MMUserInterface/MMUserInterface.csproj --configuration Release
+        dotnet build MMDataAccess/MMDataAccess.csproj --configuration Release
+        dotnet build MMUserInterface/MMUserInterface.csproj --configuration Release
 
     - name: Run unit tests
       run: dotnet test TestsUnit.csproj
