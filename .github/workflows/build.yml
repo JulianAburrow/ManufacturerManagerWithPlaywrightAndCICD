@@ -24,13 +24,21 @@ jobs:
 
       - name: Install sqlcmd and sqlpackage manually
         run: |
-          # Download and extract sqlcmd
-          curl -L -o sqlcmd-linux-x64.tar.gz https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
+          # Download sqlcmd release
+          curl -L -o sqlcmd.tar.gz https://github.com/microsoft/sqlcmd/releases/download/v0.20.0/sqlcmd-linux-x64.tar.gz
+
+          # Check file size before extracting
+          if [ $(stat -c%s sqlcmd.tar.gz) -lt 10000 ]; then
+            echo "sqlcmd download failed or incomplete"
+            cat sqlcmd.tar.gz
+            exit 1
+          fi
+
           mkdir sqlcmd
-          tar -xzf sqlcmd-linux-x64.tar.gz -C sqlcmd
+          tar -xzf sqlcmd.tar.gz -C sqlcmd
           sudo mv sqlcmd/sqlcmd /usr/local/bin/
 
-          # Download and extract sqlpackage
+          # Download sqlpackage
           curl -L -o sqlpackage.zip https://aka.ms/sqlpackage-linux
           unzip sqlpackage.zip -d sqlpackage
           sudo mv sqlpackage/sqlpackage /usr/local/bin/
