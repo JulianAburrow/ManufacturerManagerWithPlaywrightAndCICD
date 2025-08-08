@@ -2,12 +2,15 @@
 
 on:
   push:
-    branches: [ main, feature/* ]
+    branches:
+      - main
+      - '**'
   pull_request:
     branches: [ main ]
 
 jobs:
   build-and-test:
+    if: startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
