@@ -1,0 +1,13 @@
+﻿
+
+CREATE TABLE Error (
+	ErrorId INT NOT NULL IDENTITY (1, 1),
+	ErrorDate DATETIME NOT NULL,
+	ErrorMessage NVARCHAR(500) NOT NULL,
+	Exception NVARCHAR(MAX) NOT NULL,
+	InnerException NVARCHAR(MAX) NULL,
+	StackTrace NVARCHAR(MAX) NULL,
+	Resolved BIT NOT NULL,
+	ResolvedDate DATETIME NULL,
+	CONSTRAINT PK_ApplicationErrors PRIMARY KEY (ErrorId)
+)

@@ -22,18 +22,18 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build solution
-      run: dotnet build --no-restore
+    - name: Build only supported projects
+      run: |
+        dotnet build MMDataAccess/MMDataAccess.csproj --no-restore
+        dotnet build MMUserInterface/MMUserInterface.csproj --no-restore
+        dotnet build TestsUnit/TestsUnit.csproj --no-restore
+        dotnet build TestsPlaywright/TestsPlaywright.csproj --no-restore
 
     - name: Run unit tests
       run: dotnet test TestsUnit.csproj
         --no-build
         --configuration Debug
       working-directory: TestsUnit
-    
-    - name: Restore .NET tools
-      run: dotnet tool restore
-      working-directory: TestsPlaywright
 
     - name: Install Playwright CLI (no manifest)
       run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
@@ -62,13 +62,13 @@ jobs:
       run: |
         set -e  # fail on any error
 
-        docker pull jaburrow/manufacturermanagerseeded:latest
+        docker pull jaburrow/manufacturermanager:seeded
 
         docker run -d --name seeded-db \
           -e "ACCEPT_EULA=Y" \
           -e "SA_PASSWORD=$SA_PASSWORD" \
           -p 11433:1433 \
-          jaburrow/manufacturermanagerseeded:latest
+          jaburrow/manufacturermanager:seeded
 
     - name: Wait for SQL Server to become available
       shell: bash

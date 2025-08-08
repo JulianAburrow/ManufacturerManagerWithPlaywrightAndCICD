@@ -6,7 +6,7 @@ public static class ServiceExtensions
         services.AddDbContext<ManufacturerManagerContext>(
             options =>
                 options.UseSqlServer(
-                    configuration.GetConnectionString("ManufacturerManagerWithMudBlazor")));
+                    configuration.GetConnectionString("ManufacturerManager")));
 
     public static void AddDependencies(this IServiceCollection services)
     {
