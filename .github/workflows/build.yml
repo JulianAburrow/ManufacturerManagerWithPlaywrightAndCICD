@@ -72,7 +72,7 @@ jobs:
           -e "ACCEPT_EULA=Y" \
           -e "SA_PASSWORD=$SA_PASSWORD" \
           -p 11433:1433 \
-          jaburrow/manufacturermanagerseeded:latest
+          jaburrow/manufacturermanager:seeded
 
     - name: Wait for SQL Server to become available
       shell: bash
