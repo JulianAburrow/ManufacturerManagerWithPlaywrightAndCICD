@@ -27,6 +27,7 @@ jobs:
         dotnet build MMDataAccess/MMDataAccess.csproj --no-restore
         dotnet build MMUserInterface/MMUserInterface.csproj --no-restore
         dotnet build TestsUnit/TestsUnit.csproj --no-restore
+        dotnet build TestsPlaywright/TestsPlaywright.csproj --no-restore
 
     - name: Run unit tests
       run: dotnet test TestsUnit.csproj
