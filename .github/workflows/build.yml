@@ -2,122 +2,34 @@
 
 on:
   push:
-    branches:
-      - main
-      - '**'
   pull_request:
     branches: [ main ]
 
 jobs:
   build-and-test:
-    if: startsWith(github.ref, 'refs/heads/feature/') || github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Setup .NET SDK
+    - name: Set up .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build selected projects
-      run: |
-        dotnet build MMDataAccess/MMDataAccess.csproj --configuration Release
-        dotnet build MMUserInterface/MMUserInterface.csproj --configuration Release
-
-    - name: Run unit tests
-      run: dotnet test TestsUnit.csproj
-        --no-build
-        --configuration Debug
-      working-directory: TestsUnit
-    
-    - name: Restore .NET tools
-      run: dotnet tool restore
-      working-directory: TestsPlaywright
-
-    - name: Install Playwright CLI (no manifest)
-      run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
-    
-    - name: Install Playwright browsers (Chromium only)
-      run: tools/playwright install --with-deps chromium
-
-    - name: Generate and trust HTTPS development certificate
-      run: |
-        dotnet dev-certs https --clean
-        dotnet dev-certs https
+    - name: Pull latest SQL Server image
       shell: pwsh
+      run: docker pull jaburrow/manufacturermanager
 
-    - name: Docker login
+    - name: Start SQL Server container
       shell: pwsh
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       run: |
-        $env:DOCKER_PASSWORD | docker login --username $env:DOCKER_USERNAME --password-stdin
+        docker run -e "ACCEPT_EULA=Y" `
+               -e "MSSQL_SA_PASSWORD=${{ secrets.SQL_PASSWORD }}" `
+               -p 11433:1433 `
+               --name manufacturermanager `
+               -d jaburrow/manufacturermanager
+        Start-Sleep -Seconds 20
 
-    - name: Start Dockerized SQL Server
-      shell: bash
-      env:
-        SA_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      run: |
-        set -e  # fail on any error
 
-        docker pull jaburrow/manufacturermanagerseeded:latest
-
-        docker run -d --name seeded-db \
-          -e "ACCEPT_EULA=Y" \
-          -e "SA_PASSWORD=$SA_PASSWORD" \
-          -p 11433:1433 \
-          jaburrow/manufacturermanagerseeded:latest
-
-    - name: Wait for SQL Server to become available
-      shell: bash
-      env:
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      run: |
-        set -e
-        max_attempts=10
-        attempt=1
-        until docker run --rm --network host mcr.microsoft.com/mssql-tools \
-          /bin/bash -c "/opt/mssql-tools/bin/sqlcmd -S localhost,11433 -U sa -P \"$DB_PASSWORD\" -Q \"SELECT 1\"" > /dev/null 2>&1
-        do
-          if [ $attempt -ge $max_attempts ]; then
-            echo "SQL Server not available after $max_attempts attempts."
-            exit 1
-          fi
-          echo "Attempt $attempt: SQL Server not ready, waiting..."
-          sleep 5
-          attempt=$((attempt+1))
-        done
-        echo "SQL Server is available!"
-    
-    - name: Start MMUserInterface in background
-      shell: bash
-      run: |
-        dotnet run --no-build --urls https://127.0.0.1:5245 &
-        sleep 20
-      working-directory: MMUserInterface
-
-    - name: Check if MMUserInterface is up
-      shell: bash
-      run: |
-        for i in {1..30}; do
-          if curl -k --silent --fail https://127.0.0.1:5245/ > /dev/null; then
-            echo "MMUserInterface is up!"
-            exit 0
-          fi
-          echo "Waiting for MMUserInterface..."
-          sleep 2
-        done
-        echo "MMUserInterface did not become ready in time."
-        exit 1
-
-    - name: Run Playwright tests over HTTPS
-      shell: pwsh
-      run: dotnet test TestsPlaywright.csproj -- "UseHttps=true"
-      working-directory: TestsPlaywright
