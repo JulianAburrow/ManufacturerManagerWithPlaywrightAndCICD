@@ -34,10 +34,6 @@ jobs:
         --no-build
         --configuration Debug
       working-directory: TestsUnit
-    
-    - name: Restore .NET tools
-      run: dotnet tool restore
-      working-directory: TestsPlaywright
 
     - name: Install Playwright CLI (no manifest)
       run: dotnet tool install Microsoft.Playwright.CLI --tool-path tools
