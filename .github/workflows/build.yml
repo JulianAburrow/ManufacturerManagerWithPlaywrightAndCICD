@@ -1,7 +1,9 @@
 ﻿﻿name: Build and Test (.NET on Windows with Playwright)
 
 on:
-  push: {}
+  push:
+    branches:
+      - '**' 
   pull_request:
     branches: [ main ]
 
