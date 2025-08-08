@@ -3,3 +3,5 @@
 # ManufacturerManager
 
 A .NET solution with unit and integration testing designed for scalable manufacturer management — built with Blazor, tested with xUnit and Playwright and delivered through automated CI/CD.
+
+This is now a database project running against a SQL Server instance in a docker container.
